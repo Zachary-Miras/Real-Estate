@@ -12,9 +12,9 @@ export default async function Home() {
 	const products = await getProducts();
 
 	return (
-		<div>
-			<Header />
-			<div className='items-container'>
+		<div className=''>
+			<Header className='w-full' />
+			<div className='flex flex-wrap items-center justify-center gap-4'>
 				{products.map((product) => (
 					<Item
 						key={product.id}
@@ -23,6 +23,7 @@ export default async function Home() {
 						description={product.description}
 						reviews={product.reviews}
 						ImagePath={product.ImagePath}
+						className='mx-2'
 					/>
 				))}
 			</div>
