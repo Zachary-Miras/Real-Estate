@@ -1,3 +1,4 @@
+import Link from "next/link";
 export function Header() {
 	return (
 		<div className='w-full mx-0 p-4 flex flex-row justify-between items-stretch mb-10 bg-secondary border-b border-secondary'>
@@ -12,7 +13,15 @@ export function Header() {
 					OK
 				</button>
 			</form>
-			<div className='cursor-pointer border border-sky-500 p-2'>Panier</div>
+			<Link
+				className='cursor-pointer border border-sky-500 p-2 mr-6'
+				href='/profil'>
+				{" "}
+				Profil
+			</Link>
+			<Link className='cursor-pointer border border-sky-500 p-2' href='/cart'>
+				Panier
+			</Link>
 		</div>
 	);
 }
