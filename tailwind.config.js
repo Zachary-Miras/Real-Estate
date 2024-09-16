@@ -13,6 +13,12 @@ module.exports = {
 				primary: "var(--primary)",
 				secondary: "var(--secondary)",
 				accent: "var(--accent)",
+				"custom-blue-1": "rgb(31,86,166)",
+				"custom-blue-2": "rgb(11,43,102)",
+				"custom-blue-3": "rgb(1,12,55)",
+			},
+			fontFamily: {
+				montserrat: ["Montserrat", "sans-serif"],
 			},
 		},
 	},

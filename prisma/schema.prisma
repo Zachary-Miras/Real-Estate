@@ -14,14 +14,33 @@ datasource db {
 }
 
 
-model Product{
-    id        String  @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    priceInCents     Int
-    description String
-    createdAt DateTime @default(now())
-    reviews   String[]
-    ImagePath String
-    updatedAt DateTime @updatedAt
-
+model Property {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  price       Float
+  propertyType PropertyType
+  address     Address    @relation(fields: [addressId], references: [id])
+  addressId   String     @db.ObjectId
+  photos      String[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
+
+model Address {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  street    String
+  city      String
+  state     String
+  zipCode   String
+  country   String
+  property  Property[]
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  CONDO
+  LAND
+}
+

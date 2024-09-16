@@ -4,10 +4,32 @@
 
 @layer base {
 	:root {
-		--text: #1e1926;
-		--background: #e4e4e4;
-		--primary: #5338d3;
-		--secondary: #d5e5ea;
-		--accent: #2b8195;
+		--text: #1d1d1d;
+		--background: #e8e8e8;
+		--primary: #b7b7b7;
+		--secondary: #8c8c8c;
+		--accent: #525252;
+	}
+
+	body {
+		font-family: "Montserrat", sans-serif;
+	}
+}
+
+/* globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none; /* Internet Explorer 10+ */
+		scrollbar-width: none; /* Firefox */
+	}
+	.h-screen-minus-header {
+		height: calc(100vh - 120px);
 	}
 }
