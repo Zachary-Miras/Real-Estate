@@ -1,18 +1,74 @@
-export function Property({ title, price, address, imageUrl }) {
+"use client";
+import { useEffect, useRef, useState } from "react";
+import Information from "./Information";
+import Item from "./Item";
+
+export default function Property({ properties }) {
+	const [selectedProperty, setSelectedProperty] = useState(
+		properties[0] || null
+	);
+	const scrollContainerRef = useRef(null);
+
+	useEffect(() => {
+		const container = scrollContainerRef.current;
+		const items = container.querySelectorAll(".property-item");
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const propertyId = entry.target.getAttribute("data-id");
+						const property = properties.find((p) => p.id === propertyId);
+						setSelectedProperty(property);
+					}
+				});
+			},
+			{
+				root: container,
+				threshold: 0.5,
+			}
+		);
+
+		items.forEach((item) => observer.observe(item));
+
+		return () => {
+			items.forEach((item) => observer.unobserve(item));
+		};
+	}, [properties]);
+
+	const handleClick = (property, itemRef) => {
+		setSelectedProperty(property);
+		itemRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+	};
+
 	return (
-		<div className='text-primary bg-white shadow-xl rounded-[15px] mt-0 mb-8 w-96 h-max flex flex-col items-center'>
-			<div className='w-full h-full flex justify-center items-center rounded-t-[15px] overflow-hidden'>
-				<img
-					src={imageUrl}
-					alt={title}
-					className='w-full h-full object-cover'
-				/>
+		<div className='flex w-full'>
+			<div
+				ref={scrollContainerRef}
+				className='flex flex-wrap justify-around gap-2 w-2/5 overflow-scroll flex-row no-scrollbar h-screen-minus-header'>
+				{properties.map((property) => {
+					const itemRef = useRef(null);
+					return (
+						<div
+							key={property.id}
+							data-id={property.id}
+							className='property-item'
+							ref={itemRef}
+							onClick={() => handleClick(property, itemRef)}>
+							<Item
+								title={property.title}
+								price={property.price}
+								address={`${property.address.street}, ${property.address.city}, ${property.address.state}, ${property.address.zipCode}, ${property.address.country}`}
+								imageUrl={property.photos[0]}
+							/>
+						</div>
+					);
+				})}
 			</div>
-			<div className='bg-secondary h-max w-full m-0 pb-2 pl-2 mt-3 rounded-b-[15px]'>
-				<h2 className='text-xl font-semibold mt-3'>{title}</h2>
-				<p className='text-accent mt-4'>{price} €</p>
-				<p className='text-sm mt-2'>{address}</p>
-			</div>
+			<Information
+				className='w-3/5 fixed right-0 h-screen-minus-header'
+				property={selectedProperty}
+			/>
 		</div>
 	);
 }
