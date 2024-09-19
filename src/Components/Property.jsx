@@ -25,7 +25,7 @@ export default function Property({ properties }) {
 			},
 			{
 				root: container,
-				threshold: 0.5,
+				threshold: 1,
 			}
 		);
 
