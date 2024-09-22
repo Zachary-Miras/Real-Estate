@@ -1,5 +1,5 @@
 import Carousel from "./Carousel";
-
+import Map from "./Map";
 export default function Information({ property }) {
 	if (!property) {
 		return (
@@ -13,18 +13,25 @@ export default function Information({ property }) {
 		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 	}
 
+	const address = [
+		property.address.street,
+		property.address.city,
+		property.address.state,
+		property.address.zipCode,
+		property.address.country,
+	].join(", ");
+
 	return (
 		<div className='w-full h-screen-minus-header min-h-full bg-gray-300 p-4'>
 			<div className='w-[70%]'>
 				<Carousel slides={property.photos} />
 			</div>
+			<div className='mt-6'>
+				<Map address={address} />
+			</div>
 			<h2 className='text-2xl font-bold'>{property.title}</h2>
 			<p className='text-xl'> {formatPrice(property.price)} $</p>
-			<p className='text-lg'>
-				{property.address.street}, {property.address.city},{" "}
-				{property.address.state}, {property.address.zipCode},{" "}
-				{property.address.country}
-			</p>
+			<p className='text-lg'>{address}</p>
 		</div>
 	);
 }
