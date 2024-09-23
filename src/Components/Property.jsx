@@ -66,7 +66,7 @@ export default function Property({ properties }) {
 				})}
 			</div>
 			<Information
-				className='w-3/5 fixed right-0 h-screen-minus-header'
+				className='w-3/5 right-0 h-full'
 				property={selectedProperty}
 			/>
 		</div>

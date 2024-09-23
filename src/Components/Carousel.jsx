@@ -47,7 +47,7 @@ export default function Carousel({ slides }) {
 				))}
 			</div>
 
-			<div className='absolute top-0 h-full w-full justify-between items-center flex text-white px-10 text-3xl'>
+			<div className='absolute top-0 h-full w-full justify-between items-center flex text-white px-10 text-3xl outline-0'>
 				<button onClick={previousSlide}>
 					<FaArrowCircleLeft />
 				</button>
