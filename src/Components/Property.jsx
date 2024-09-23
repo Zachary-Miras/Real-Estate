@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Information from "./Information";
 import Item from "./Item";
-
+import Map from "./Map";
 export default function Property({ properties }) {
 	const [selectedProperty, setSelectedProperty] = useState(
 		properties[0] || null
@@ -42,10 +41,10 @@ export default function Property({ properties }) {
 	};
 
 	return (
-		<div className='flex w-full'>
+		<div className='flex w-full '>
 			<div
 				ref={scrollContainerRef}
-				className='flex flex-wrap justify-around gap-2 w-2/5 overflow-scroll flex-row no-scrollbar h-screen-minus-header'>
+				className='flex flex-wrap gap-2 w-[50%] h-full justify-start bg-white ml-[5%] mr-[5%]'>
 				{properties.map((property) => {
 					const itemRef = useRef(null);
 					return (
@@ -65,10 +64,11 @@ export default function Property({ properties }) {
 					);
 				})}
 			</div>
-			<Information
-				className='w-3/5 right-0 h-full'
-				property={selectedProperty}
-			/>
+			<div className='w-[50%] outline-none pr-8'>
+				<Map
+					address={`${selectedProperty.address.street}, ${selectedProperty.address.city}, ${selectedProperty.address.state}, ${selectedProperty.address.zipCode}, ${selectedProperty.address.country}`}
+				/>
+			</div>
 		</div>
 	);
 }

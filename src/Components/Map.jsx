@@ -52,5 +52,5 @@ export default function Map({ address }) {
 		initMap();
 	}, [address]);
 
-	return <div className='h-96 w-full' ref={mapRef} />;
+	return <div className='h-[800px] ' ref={mapRef} />;
 }
