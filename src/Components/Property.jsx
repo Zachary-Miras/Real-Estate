@@ -9,6 +9,12 @@ export default function Property({ properties }) {
 		properties[0] || null
 	);
 
+	const [address, setAddress] = useState("");
+
+	const handleAddressChange = (newAddress) => {
+		setAddress(newAddress);
+	};
+
 	const formatAddress = (address) => {
 		const addressParts = [
 			address.street,
@@ -23,7 +29,7 @@ export default function Property({ properties }) {
 	return (
 		<div className='flex w-full '>
 			<div className='flex flex-wrap gap-2 w-[50%] h-full justify-start bg-white ml-[5%] mr-[5%]'>
-				<SearchBar />
+				<SearchBar onAddressChange={handleAddressChange} />
 				{properties.map((property) => {
 					return (
 						<Item

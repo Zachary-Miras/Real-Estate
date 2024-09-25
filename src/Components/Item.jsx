@@ -2,6 +2,8 @@ import Link from "next/link";
 import { FiMapPin } from "react-icons/fi";
 
 export default function Item({ id, title, price, address, imageUrl }) {
+	const formattedPrice = price.toLocaleString();
+
 	return (
 		<div className='text-black bg-[#fbfbfe] shadow-xl rounded-[15px] mt-0 mb-8 w-96 h-max flex flex-col items-center cursor-pointer'>
 			<Link href={`/property/${id}`}>
@@ -15,7 +17,7 @@ export default function Item({ id, title, price, address, imageUrl }) {
 					</div>
 				</div>
 				<div className=' h-max w-full m-0 pb-2 pl-2 mt-0 rounded-b-[15px]'>
-					<p className=' mt-4'>{price} $</p>
+					<p className=' mt-4'>{formattedPrice} $</p>
 					<div className=' font-semibold text-sm mt-2 flex justify-start items-center gap-1'>
 						<FiMapPin />
 						{address}

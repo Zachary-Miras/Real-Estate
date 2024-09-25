@@ -1,7 +1,6 @@
 import Property from "@/Components/Property";
-import { PrismaClient } from "@prisma/client";
 import { Header } from "../../Components/Header";
-const prisma = new PrismaClient();
+import prisma from "../../services/prismaClient";
 
 async function getProperty() {
 	return prisma.property.findMany({
