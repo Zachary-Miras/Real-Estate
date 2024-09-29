@@ -3,6 +3,7 @@ import "./globals.css";
 
 export const metadata = {
 	title: "Real Estate App",
+	description: "Description de votre page",
 };
 
 export default function RootLayout({ children }) {

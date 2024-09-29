@@ -1,15 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Item from "./Item";
 import Map from "./Map";
 import SearchBar from "./SearchBar";
 
-export default function Property({ properties }) {
-	const [selectedProperty, setSelectedProperty] = useState(
-		properties[0] || null
-	);
-
-	const [address, setAddress] = useState("");
+export default function Property({ properties, city }) {
+	const [address, setAddress] = useState("Paris");
 
 	const handleAddressChange = (newAddress) => {
 		setAddress(newAddress);
@@ -25,6 +21,10 @@ export default function Property({ properties }) {
 		];
 		return addressParts.filter((part) => part).join(", ");
 	};
+
+	useEffect(() => {
+		city = address;
+	}, [city]);
 
 	return (
 		<div className='flex w-full '>
@@ -44,7 +44,7 @@ export default function Property({ properties }) {
 				})}
 			</div>
 			<div className='w-[50%] outline-none pr-8'>
-				<Map address={formatAddress(selectedProperty.address)} />
+				<Map address={address} />
 			</div>
 		</div>
 	);

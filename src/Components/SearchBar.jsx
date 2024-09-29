@@ -15,8 +15,14 @@ function SearchBar({ onAddressChange }) {
 	const handleOnPlacesChanged = () => {
 		let places = inputRef.current.getPlaces();
 		if (places && places.length > 0) {
-			let address = places[0].formatted_address;
-			onAddressChange(address);
+			let addressComponents = places[0].address_components;
+			let city = addressComponents.find((component) =>
+				component.types.includes("locality")
+			)?.long_name;
+
+			if (city) {
+				onAddressChange(city);
+			}
 		}
 	};
 
