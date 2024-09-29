@@ -1,14 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Item from "./Item";
 import Map from "./Map";
 import SearchBar from "./SearchBar";
 
-export default function Property({ properties, city }) {
-	const [address, setAddress] = useState("Paris");
+export default function Property({ properties }) {
+	const [city, setCity] = useState("Paris");
+	const [country, setCountry] = useState("France");
+	const [address, setAddress] = useState("Paris, France");
 
-	const handleAddressChange = (newAddress) => {
-		setAddress(newAddress);
+	const handleAddressChange = (address, newCity, newCountry) => {
+		setAddress(address);
+		setCity(newCity);
+		setCountry(newCountry);
 	};
 
 	const formatAddress = (address) => {
@@ -17,20 +21,27 @@ export default function Property({ properties, city }) {
 			address.city,
 			address.state,
 			address.zipCode,
-			address.country,
 		];
 		return addressParts.filter((part) => part).join(", ");
 	};
 
-	useEffect(() => {
-		city = address;
-	}, [city]);
+	const filteredProperties = properties.filter((property) => {
+		if (city) {
+			return property.address.city === city;
+		} else {
+			return property.address.country === country;
+		}
+	});
+
+	const filteredAddresses = filteredProperties.map((property) =>
+		formatAddress(property.address)
+	);
 
 	return (
 		<div className='flex w-full '>
 			<div className='flex flex-wrap gap-2 w-[50%] h-full justify-start bg-white ml-[5%] mr-[5%]'>
 				<SearchBar onAddressChange={handleAddressChange} />
-				{properties.map((property) => {
+				{filteredProperties.map((property) => {
 					return (
 						<Item
 							key={property.id}
@@ -44,7 +55,7 @@ export default function Property({ properties, city }) {
 				})}
 			</div>
 			<div className='w-[50%] outline-none pr-8'>
-				<Map address={address} />
+				<Map address={address} markers={filteredAddresses} />
 			</div>
 		</div>
 	);

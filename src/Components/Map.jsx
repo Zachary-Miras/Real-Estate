@@ -1,7 +1,7 @@
 import { Loader } from "@googlemaps/js-api-loader";
 import { useEffect, useRef } from "react";
 
-export default function Map({ address }) {
+export default function Map({ markers }) {
 	const mapRef = useRef(null);
 
 	useEffect(() => {
@@ -15,41 +15,67 @@ export default function Map({ address }) {
 			const { Geocoder } = await loader.importLibrary("geocoding");
 			const { AdvancedMarkerElement } = await loader.importLibrary("marker");
 
-			// Adresse à géocoder
-
 			const geocoder = new Geocoder();
 
-			// Géocodage de l'adresse pour obtenir la position géographique
-			geocoder.geocode({ address }, (results, status) => {
-				if (status === "OK") {
-					// Coordonnées géographiques de l'adresse
-					const position = results[0].geometry.location;
+			// Fonction pour géocoder une adresse et placer un marqueur
+			const geocodeAddress = (address, map) => {
+				return new Promise((resolve, reject) => {
+					geocoder.geocode({ address }, (results, status) => {
+						if (status === "OK") {
+							const position = results[0].geometry.location;
+							const marker = new AdvancedMarkerElement({
+								map: map,
+								position: position,
+							});
+							resolve(position);
+						} else {
+							console.error(
+								"Geocode was not successful for the following reason: " + status
+							);
+							reject(status);
+						}
+					});
+				});
+			};
 
-					// Options
+			// Géocoder la première adresse pour centrer la carte
+			if (markers.length > 0) {
+				const firstAddress = markers[0];
+				geocodeAddress(firstAddress).then((firstPosition) => {
+					// Options de la carte avec le centre sur le premier marqueur
 					const mapOptions = {
-						center: position,
-						zoom: 17,
+						center: firstPosition,
+						zoom: 15, // Zoom par défaut
+						minZoom: 10, // Zoom minimum
 						mapId: "MY_NEXTJS_MAP_ID",
 					};
 
-					// init
+					// Initialisation de la carte
 					const map = new Map(mapRef.current, mapOptions);
 
-					// Marker
-					const marker = new AdvancedMarkerElement({
-						map: map,
-						position: position,
+					// Créer un objet LatLngBounds pour ajuster les limites de la carte
+					const bounds = new google.maps.LatLngBounds();
+
+					// Géocoder chaque adresse et placer un marqueur
+					markers.forEach((address) => {
+						geocodeAddress(address, map).then((position) => {
+							bounds.extend(position);
+							map.fitBounds(bounds); // Ajuster les limites de la carte
+						});
 					});
-				} else {
-					console.error(
-						"Geocode was not successful for the following reason: " + status
-					);
-				}
-			});
+
+					// Vérifier et ajuster le zoom après avoir ajusté les limites
+					google.maps.event.addListenerOnce(map, "bounds_changed", () => {
+						if (map.getZoom() < 15) {
+							map.setZoom(15);
+						}
+					});
+				});
+			}
 		};
 
 		initMap();
-	}, [address]);
+	}, [markers]);
 
-	return <div className='h-[800px] ' ref={mapRef} />;
+	return <div className='h-[800px]' ref={mapRef} />;
 }
