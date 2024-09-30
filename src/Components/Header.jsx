@@ -7,11 +7,11 @@ export function Header() {
 				{" "}
 				Property
 			</Link>
-			<Link className='cursor-pointer  p-2' href='/cart'>
-				RENT
+			<Link className='cursor-pointer p-2' href='/sell'>
+				Sell
 			</Link>
-			<Link className='cursor-pointer p-2' href='/cart'>
-				SELL
+			<Link className='cursor-pointer p-2' href='/contact'>
+				Contact
 			</Link>
 		</div>
 	);
