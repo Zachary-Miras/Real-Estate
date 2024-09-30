@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaArrowCircleLeft, FaArrowCircleRight } from "react-icons/fa";
-
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 export default function Carousel({ slides }) {
 	const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -36,7 +35,7 @@ export default function Carousel({ slides }) {
 	}, [currentSlide]);
 
 	return (
-		<div className='overflow-hidden relative'>
+		<div className='overflow-hidden relative '>
 			<div
 				className={`flex transition ease-out duration-300`}
 				style={{
@@ -47,16 +46,16 @@ export default function Carousel({ slides }) {
 				))}
 			</div>
 
-			<div className='absolute top-0 h-full w-full justify-between items-center flex text-white px-10 text-3xl outline-0'>
+			<div className='absolute top-0 h-full w-full justify-between items-center flex text-white px-4 text-3xl outline-0'>
 				<button onClick={previousSlide}>
-					<FaArrowCircleLeft />
+					<IoIosArrowBack />
 				</button>
 				<button onClick={nextSlide}>
-					<FaArrowCircleRight />
+					<IoIosArrowForward />
 				</button>
 			</div>
 
-			<div className='absolute bottom-0 py-4 flex justify-center items-center gap-3 w-full'>
+			<div className='absolute bottom-0 py-4 flex justify-center items-center gap-3 w-full '>
 				{slides.map((photo, index) => {
 					return (
 						<div

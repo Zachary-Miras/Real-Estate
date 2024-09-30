@@ -1,7 +1,6 @@
 import { Header } from "@/Components/Header";
-import Property from "@/Components/Property";
+import Properties from "@/Components/Properties";
 import prisma from "@/services/prismaClient";
-
 async function getProperty() {
 	return prisma.property.findMany({
 		include: {
@@ -16,7 +15,7 @@ export default async function Home() {
 	return (
 		<div className='min-h-screen'>
 			<Header className='w-full' />
-			<Property properties={properties} />
+			<Properties properties={properties} />
 		</div>
 	);
 }

@@ -1,61 +1,43 @@
 "use client";
-import { useState } from "react";
-import Item from "./Item";
+import Carousel from "./Carousel";
+import MailForm from "./MailForm";
 import Map from "./Map";
-import SearchBar from "./SearchBar";
-
-export default function Property({ properties }) {
-	const [city, setCity] = useState("Paris");
-	const [country, setCountry] = useState("France");
-	const [address, setAddress] = useState("Paris, France");
-
-	const handleAddressChange = (address, newCity, newCountry) => {
-		setAddress(address);
-		setCity(newCity);
-		setCountry(newCountry);
-	};
-
-	const formatAddress = (address) => {
+export function Property({ property }) {
+	const formatAddress = () => {
 		const addressParts = [
-			address.street,
-			address.city,
-			address.state,
-			address.zipCode,
+			property.address.street,
+			property.address.city,
+			property.address.state,
+			property.address.zipCode,
+			property.address.country,
 		];
 		return addressParts.filter((part) => part).join(", ");
 	};
 
-	const filteredProperties = properties.filter((property) => {
-		if (city) {
-			return property.address.city === city;
-		} else {
-			return property.address.country === country;
-		}
-	});
+	const formattedAddress = formatAddress();
 
-	const filteredAddresses = filteredProperties.map((property) =>
-		formatAddress(property.address)
-	);
+	const addressMap = [
+		`${property.address.street}, ${property.address.city},${property.address.state} , ${property.address.zipCode}, ${property.address.country}`,
+	];
+
+	const formattedPrice = property.price.toLocaleString();
 
 	return (
-		<div className='flex w-full '>
-			<div className='flex flex-wrap gap-2 w-[50%] h-full justify-start bg-white ml-[5%] mr-[5%]'>
-				<SearchBar onAddressChange={handleAddressChange} />
-				{filteredProperties.map((property) => {
-					return (
-						<Item
-							key={property.id}
-							id={property.id}
-							title={property.title}
-							price={property.price}
-							address={formatAddress(property.address)}
-							imageUrl={property.photos[0]}
-						/>
-					);
-				})}
+		<div className='h-full w-full'>
+			<div className='h-40 shadow-xl bg-background border-b-[1px] border-secondary text-text'>
+				<p className=' text-4xl '>{property.title}</p>
+				<p className='text-3xl'>{`${formattedPrice} $`}</p>
 			</div>
-			<div className='w-[50%] outline-none pr-8'>
-				<Map address={address} markers={filteredAddresses} />
+			<div className='h-[600px] aspect-auto bg-secondary shadow-xl'>
+				<div className='h-full min-w-[50%]'>
+					<Carousel slides={property.photos} />
+				</div>
+			</div>
+			<div className='h-96 shadow-xl bg-background'>
+				<Map markers={addressMap} />
+			</div>
+			<div className='h-[600px] w-full shadow-xl bg-secondary flex  '>
+				<MailForm />
 			</div>
 		</div>
 	);

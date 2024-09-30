@@ -1,4 +1,5 @@
-import prisma from "../../../services/prismaClient";
+import { Property } from "@/Components/Property";
+import prisma from "@/services/prismaClient";
 
 export default async function page({ params }) {
 	const propertyId = params.propertyId;
@@ -17,14 +18,8 @@ export default async function page({ params }) {
 	const property = await getProperty();
 
 	return (
-		<div>
-			{property && (
-				<div>
-					<h1>{property.title}</h1>
-					<p>{property.price}</p>
-					<p>{property.address.street}</p>
-				</div>
-			)}
+		<div className='bg-background'>
+			<Property property={property} />
 		</div>
 	);
 }

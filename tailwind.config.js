@@ -8,15 +8,13 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
-				text: "var(--text)",
-				background: "var(--background)",
-				primary: "var(--primary)",
-				secondary: "var(--secondary)",
-				accent: "var(--accent)",
-				"custom-blue-1": "rgb(31,86,166)",
-				"custom-blue-2": "rgb(11,43,102)",
-				"custom-blue-3": "rgb(1,12,55)",
+				text: "#050316",
+				background: "#F0F0F0",
+				primary: "#A3C4F3",
+				secondary: "#1D3557",
+				accent: "#675adb",
 			},
+
 			fontFamily: {
 				montserrat: ["Montserrat", "sans-serif"],
 			},

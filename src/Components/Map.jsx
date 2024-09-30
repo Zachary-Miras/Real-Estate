@@ -77,5 +77,5 @@ export default function Map({ markers }) {
 		initMap();
 	}, [markers]);
 
-	return <div className='h-[800px]' ref={mapRef} />;
+	return <div className='h-full w-full' ref={mapRef} />;
 }
