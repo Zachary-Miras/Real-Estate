@@ -48,7 +48,7 @@ export default function MailForm() {
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					required
-					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 max-w-[500px] h-9 text-lg'
+					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 h-9 text-lg'
 					placeholder='John Doe'
 				/>
 			</div>
@@ -59,7 +59,7 @@ export default function MailForm() {
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 					required
-					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 max-w-[500px] h-9 text-lg'
+					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 h-9 text-lg'
 					placeholder='example@gmail.com'
 				/>
 			</div>
@@ -69,7 +69,7 @@ export default function MailForm() {
 					type='tel'
 					value={phone}
 					onChange={(e) => setPhone(e.target.value)}
-					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 max-w-[500px] h-9 text-lg'
+					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 h-9 text-lg'
 					placeholder='+33 6 00 00 00 00'
 				/>
 			</div>
@@ -80,7 +80,7 @@ export default function MailForm() {
 					value={subject}
 					onChange={(e) => setSubject(e.target.value)}
 					required
-					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 max-w-[500px] h-9 text-lg'
+					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 h-9 text-lg'
 					placeholder='Sujet de votre message'
 				/>
 			</div>
@@ -90,12 +90,16 @@ export default function MailForm() {
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
 					required
-					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 max-w-[700px] text-lg'
+					className='text-text outline-none rounded-lg pl-2 w-[50vw] min-w-96 text-lg'
 				/>
 			</div>
-			<button type='submit' className='border-solid border-2 p-2 rounded-lg'>
-				Envoyer
-			</button>
+			<div className='flex justify-center'>
+				<button
+					type='submit'
+					className='border-solid border-2 p-2 rounded-lg w-32 hover:bg-background hover:text-text transition'>
+					Envoyer
+				</button>
+			</div>
 		</form>
 	);
 }

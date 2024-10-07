@@ -35,7 +35,7 @@ export default function Carousel({ slides }) {
 	}, [currentSlide]);
 
 	return (
-		<div className='overflow-hidden relative aspect-auto w-[700px] '>
+		<div className='overflow-hidden relative aspect-auto w-[850px] '>
 			<div
 				className={`flex h-full w-full aspect-auto transition ease-out duration-300 `}
 				style={{
