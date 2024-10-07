@@ -29,7 +29,7 @@ export function Property({ property }) {
 				<p className='text-3xl'>{`${formattedPrice} $`}</p>
 			</div>
 			<div className='h-[600px] aspect-auto bg-secondary shadow-xl'>
-				<div className='h-full min-w-[50%]'>
+				<div className='flex justify-center items-center h-full min-w-[50%]'>
 					<Carousel slides={property.photos} />
 				</div>
 			</div>

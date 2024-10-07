@@ -35,9 +35,9 @@ export default function Carousel({ slides }) {
 	}, [currentSlide]);
 
 	return (
-		<div className='overflow-hidden relative '>
+		<div className='overflow-hidden relative aspect-auto w-[700px] '>
 			<div
-				className={`flex transition ease-out duration-300`}
+				className={`flex h-full w-full aspect-auto transition ease-out duration-300 `}
 				style={{
 					transform: `translateX(-${currentSlide * 100}%)`,
 				}}>
