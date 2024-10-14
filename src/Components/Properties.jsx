@@ -39,7 +39,7 @@ export default function Properties({ properties }) {
 
 	return (
 		<div className='flex w-full h-full'>
-			<div className='flex flex-wrap gap-2 w-[50%] h-full justify-start bg-white ml-[5%] mr-[5%]'>
+			<div className='flex flex-wrap gap-2 w-[55%] h-full justify-start bg-white ml-[5%] mr-[5%]'>
 				<SearchBar onAddressChange={handleAddressChange} />
 				{filteredProperties.map((property) => {
 					return (

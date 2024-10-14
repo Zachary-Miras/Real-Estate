@@ -36,7 +36,7 @@ function SearchBar({ onAddressChange }) {
 	}
 
 	return (
-		<div className='w-full h-8 border rounded-lg'>
+		<div className='w-full border h-10 shadow-xl rounded-lg  flex flex-col justify-center text-lg'>
 			{isLoaded && (
 				<StandaloneSearchBox
 					onLoad={(ref) => (inputRef.current = ref)}
@@ -44,7 +44,7 @@ function SearchBar({ onAddressChange }) {
 					<input
 						type='text'
 						placeholder='Adresse'
-						className='bg-slate-100 w-full h-full outline-none pl-2'></input>
+						className=' w-full h-full outline-none pl-3'></input>
 				</StandaloneSearchBox>
 			)}
 		</div>

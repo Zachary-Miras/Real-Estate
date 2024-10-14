@@ -1,9 +1,11 @@
 import { Header } from "@/Components/Header";
+import PropertyForm from "@/Components/PropertyForm";
 
 function page() {
 	return (
-		<div>
-			<Header></Header>
+		<div className='w-full h-full'>
+			<Header />
+			<PropertyForm className='w-full h-full' />
 		</div>
 	);
 }

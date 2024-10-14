@@ -35,7 +35,7 @@ export default function Carousel({ slides }) {
 	}, [currentSlide]);
 
 	return (
-		<div className='overflow-hidden relative aspect-auto w-[850px] '>
+		<div className='overflow-hidden relative aspect-auto w-[900px] rounded-2xl'>
 			<div
 				className={`flex h-full w-full aspect-auto transition ease-out duration-300 `}
 				style={{
@@ -55,7 +55,7 @@ export default function Carousel({ slides }) {
 				</button>
 			</div>
 
-			<div className='absolute bottom-0 py-4 flex justify-center items-center gap-3 w-full '>
+			<div className='absolute bottom-0 py-4 flex justify-center items-center gap-3 w-full  '>
 				{slides.map((photo, index) => {
 					return (
 						<div
