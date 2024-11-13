@@ -1,5 +1,10 @@
 "use client";
 import { useState } from "react";
+import { GrWheelchair } from "react-icons/gr";
+import { MdBalcony, MdGrass, MdPool } from "react-icons/md";
+import { PiGarageLight } from "react-icons/pi";
+import { TbFridge, TbStairsDown } from "react-icons/tb";
+import PropertyFormOptions from "./PropertyFormOptions";
 
 const PropertyForm = () => {
 	const [propertyType, setPropertyType] = useState("HOUSE");
@@ -83,7 +88,7 @@ const PropertyForm = () => {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className='flex flex-col gap-2 items-center w-full h-full bg-cyan-50'>
+			className='flex flex-col gap-2 items-center w-full h-full '>
 			<div>
 				<select
 					value={propertyType}
@@ -157,79 +162,34 @@ const PropertyForm = () => {
 					+
 				</button>
 			</div>
-			<div className='w-[60%]'>
-				<label>
-					<input
-						type='checkbox'
-						name='cuisineEquipee'
-						checked={caracteristiques.cuisineEquipee}
-						onChange={handleCaracteristiqueChange}
+			<div className='w-[60%] flex flex-wrap'>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Cuisine équipée' icon={TbFridge} />
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Climatisation' />
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Balcon' icon={MdBalcony} />
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Jardin' icon={MdGrass} />
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Piscine' icon={MdPool} />
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions
+						name='Accessible fauteuils roulants'
+						icon={GrWheelchair}
 					/>
-					Cuisine équipée
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='terrasse'
-						checked={caracteristiques.terrasse}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Terrasse
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='balcon'
-						checked={caracteristiques.balcon}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Balcon
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='jardin'
-						checked={caracteristiques.jardin}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Jardin
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='piscine'
-						checked={caracteristiques.piscine}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Piscine
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='accesFauteuilsRoulants'
-						checked={caracteristiques.accesFauteuilsRoulants}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Accessible fauteuils roulants
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='garage'
-						checked={caracteristiques.garage}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Garage
-				</label>
-				<label>
-					<input
-						type='checkbox'
-						name='sousSol'
-						checked={caracteristiques.sousSol}
-						onChange={handleCaracteristiqueChange}
-					/>
-					Sous-sol
-				</label>
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Garage' icon={PiGarageLight} />
+				</div>
+				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
+					<PropertyFormOptions name='Sous-sol' icon={TbStairsDown} />
+				</div>
 			</div>
 			<div className='w-[60%]'>
 				<input
