@@ -3,7 +3,7 @@ import MailForm from "@/Components/MailForm";
 import MapWrapper from "@/Components/MapWrapper";
 
 export const metadata = {
-	title: "Contact | Real Es",
+	title: "Contact | Real Estate",
 	description: "Contactez notre agence.",
 };
 
