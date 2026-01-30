@@ -1,52 +1,67 @@
-import { StandaloneSearchBox, useJsApiLoader } from "@react-google-maps/api";
-import { useRef } from "react";
+"use client";
 
-const libraries = ["places"];
+import { getGoogleMapsLoader } from "@/services/googleMapsLoader";
+import { useEffect, useRef, useState } from "react";
 
 function SearchBar({ onAddressChange }) {
 	const inputRef = useRef(null);
+	const [error, setError] = useState("");
 
-	const { isLoaded, loadError } = useJsApiLoader({
-		id: "google-map-script",
-		googleMapsApiKey: process.env.NEXT_PUBLIC_MAPS_API_KEY,
-		libraries: libraries,
-	});
+	useEffect(() => {
+		let cancelled = false;
+		let autocomplete = null;
+		let listener = null;
 
-	const handleOnPlacesChanged = () => {
-		let places = inputRef.current.getPlaces();
-		if (places && places.length > 0) {
-			let address = places[0].formatted_address;
-			let addressComponents = places[0].address_components;
+		const init = async () => {
+			try {
+				const loader = getGoogleMapsLoader();
+				await loader.load();
+				if (cancelled || !inputRef.current) return;
 
-			let country = addressComponents.find((component) =>
-				component.types.includes("country")
-			)?.long_name;
+				autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+					fields: ["formatted_address", "address_components"],
+				});
 
-			let city =
-				addressComponents.find((component) =>
-					component.types.includes("locality")
-				)?.long_name || "";
+				listener = autocomplete.addListener("place_changed", () => {
+					const place = autocomplete.getPlace();
+					if (!place) return;
 
-			onAddressChange(address, city, country);
-		}
-	};
+					const address = place.formatted_address || "";
+					const components = place.address_components || [];
+					const country =
+						components.find((c) => c.types?.includes("country"))?.long_name ||
+						"";
+					const city =
+						components.find((c) => c.types?.includes("locality"))?.long_name ||
+						"";
 
-	if (loadError) {
-		return <div>Error loading Google Maps</div>;
-	}
+					onAddressChange?.(address, city, country);
+				});
+			} catch (e) {
+				if (!cancelled) {
+					setError(e?.message || "Erreur de chargement Google Maps.");
+				}
+			}
+		};
+
+		init();
+
+		return () => {
+			cancelled = true;
+			if (listener) listener.remove();
+			if (autocomplete) google.maps.event.clearInstanceListeners(autocomplete);
+		};
+	}, [onAddressChange]);
 
 	return (
-		<div className='w-full border h-10 shadow-xl rounded-lg  flex flex-col justify-center text-lg'>
-			{isLoaded && (
-				<StandaloneSearchBox
-					onLoad={(ref) => (inputRef.current = ref)}
-					onPlacesChanged={handleOnPlacesChanged}>
-					<input
-						type='text'
-						placeholder='Adresse'
-						className=' w-full h-full outline-none pl-3'></input>
-				</StandaloneSearchBox>
-			)}
+		<div className='w-full border border-black/10 h-10 shadow-xl rounded-lg flex flex-col justify-center bg-white text-black'>
+			<input
+				ref={inputRef}
+				type='text'
+				placeholder={error ? error : "Adresse"}
+				disabled={Boolean(error)}
+				className='w-full h-full outline-none pl-3 bg-transparent text-black placeholder:text-black/40 disabled:text-black/40'
+			/>
 		</div>
 	);
 }

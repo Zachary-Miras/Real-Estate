@@ -28,7 +28,7 @@ export default function Information({ property }) {
 			<div className='flex flex-row w-full'>
 				<div>
 					<h2 className='text-2xl font-bold'>{property.title}</h2>
-					<p className='text-xl'> {formatPrice(property.price)} $</p>
+					<p className='text-xl'> {formatPrice(property.price)} €</p>
 					<p className='text-lg'>{address}</p>
 				</div>
 				<div className='w-[70%]'>

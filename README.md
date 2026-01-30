@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Real Estate (Next.js + Prisma)
 
-## Getting Started
+Application immobilière (UX “premium”) avec:
 
-First, run the development server:
+- Next.js (App Router)
+- Prisma + MongoDB
+- Auth backoffice (NextAuth Credentials)
+- Google Maps (loader centralisé)
+
+## Démarrage
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuration (.env)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Créer un fichier `.env` à la racine (voir `.env.example`).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Base de données
 
-## Learn More
+- `DATABASE_URL` : URL MongoDB pour Prisma.
 
-To learn more about Next.js, take a look at the following resources:
+### Auth (backoffice)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `NEXTAUTH_URL` : ex `http://localhost:3000`
+- `NEXTAUTH_SECRET` : une chaîne aléatoire (32+ caractères)
+- `ADMIN_EMAILS` : liste d'emails admin séparés par virgule (obligatoire)
+- `STAFF_EMAILS` : liste d'emails staff séparés par virgule (optionnel)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Règles:
 
-## Deploy on Vercel
+- Si `STAFF_EMAILS` est défini, seuls `STAFF_EMAILS` + `ADMIN_EMAILS` peuvent se connecter.
+- Si `STAFF_EMAILS` n'est pas défini, seuls `ADMIN_EMAILS` peuvent se connecter.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Bootstrap (premier compte):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Tant qu'il n'y a aucun user en base, `/register` permet uniquement de créer le premier compte ADMIN (email présent dans `ADMIN_EMAILS`).
+- Ensuite, seule une session ADMIN peut créer des comptes (via `/register`).
+
+### Google Maps
+
+- `NEXT_PUBLIC_MAPS_API_KEY`
+
+## Prisma
+
+```bash
+npm run db:push
+npm run db:seed
+```
+
+## Workflow annonces (statut)
+
+Les annonces ont un champ `status` : `DRAFT`, `PUBLISHED`, `SOLD`, `RENTED`, `ARCHIVED`.
+
+- Le **site public** n'affiche que les annonces `PUBLISHED`.
+- Le **backoffice** permet de changer le statut (publier/dépublier, marquer vendu/loué, archiver).
+
+Si tu avais déjà des biens en base avant l'ajout du champ, lance:
+
+```bash
+npm run db:backfill:status
+```
+
+## Build
+
+```bash
+npm run build
+npm run start
+```

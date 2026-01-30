@@ -1,5 +1,11 @@
-import Head from "next/head";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
+
+const montserrat = Montserrat({
+	subsets: ["latin"],
+	weight: ["400", "700"],
+	display: "swap",
+});
 
 export const metadata = {
 	title: "Real Estate App",
@@ -8,14 +14,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang='en'>
-			<Head>
-				<link
-					href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap'
-					rel='stylesheet'
-				/>
-			</Head>
-			<body className='bg-white at-b font-montserrat min-h-screen'>
+		<html lang='fr'>
+			<body
+				className={`${montserrat.className} app-bg min-h-screen text-[color:var(--text-on-dark)]`}>
 				{children}
 			</body>
 		</html>

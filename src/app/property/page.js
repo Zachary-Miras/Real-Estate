@@ -3,6 +3,7 @@ import Properties from "@/Components/Properties";
 import prisma from "@/services/prismaClient";
 async function getProperty() {
 	return prisma.property.findMany({
+		where: { status: "PUBLISHED" },
 		include: {
 			address: true,
 		},

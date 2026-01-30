@@ -35,6 +35,8 @@ export async function createProperty() {
 		},
 	});
 
-	console.log("Created new address:", newAddress);
-	console.log("Created new property:", newProperty);
+	if (process.env.NODE_ENV !== "production") {
+		console.log("Created new address:", newAddress);
+		console.log("Created new property:", newProperty);
+	}
 }

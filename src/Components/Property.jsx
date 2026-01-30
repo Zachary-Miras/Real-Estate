@@ -20,13 +20,15 @@ export function Property({ property }) {
 		`${property.address.street}, ${property.address.city},${property.address.state} , ${property.address.zipCode}, ${property.address.country}`,
 	];
 
-	const formattedPrice = property.price.toLocaleString();
+	const formattedPrice = new Intl.NumberFormat("fr-FR", {
+		maximumFractionDigits: 0,
+	}).format(property.price);
 
 	return (
 		<div className='h-full w-full bg-secondary'>
 			<div className='h-40 border-b-[1px]  border-secondary text-text'>
 				<p className=' text-4xl '>{property.title}</p>
-				<p className='text-3xl'>{`${formattedPrice} $`}</p>
+				<p className='text-3xl'>{`${formattedPrice} €`}</p>
 			</div>
 			<div className='min-h-96 h-[60vh] aspect-auto bg-secondary'>
 				<div className='flex justify-center items-center h-full min-w-[70%]'>

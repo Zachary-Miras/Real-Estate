@@ -1,0 +1,102 @@
+import prisma from "@/services/prismaClient";
+import bcrypt from "bcryptjs";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+function parseEmailList(value) {
+	return String(value || "")
+		.split(",")
+		.map((s) => s.trim().toLowerCase())
+		.filter(Boolean);
+}
+
+function isEmailAllowed(email) {
+	const admin = new Set(parseEmailList(process.env.ADMIN_EMAILS));
+	const staff = parseEmailList(process.env.STAFF_EMAILS);
+	if (staff.length > 0) {
+		return staff.includes(email) || admin.has(email);
+	}
+	// Si STAFF_EMAILS n'est pas défini, on autorise uniquement les admins.
+	return admin.has(email);
+}
+
+function getRoleForEmail(email) {
+	const admin = new Set(parseEmailList(process.env.ADMIN_EMAILS));
+	return admin.has(email) ? "ADMIN" : "AGENT";
+}
+
+export const authOptions = {
+	providers: [
+		CredentialsProvider({
+			name: "credentials",
+			credentials: {
+				email: { label: "Email", type: "email" },
+				password: { label: "Mot de passe", type: "password" },
+			},
+			authorize: async (credentials) => {
+				const email = String(credentials?.email || "")
+					.trim()
+					.toLowerCase();
+				const password = String(credentials?.password || "");
+
+				if (!email || !password) return null;
+				if (!isEmailAllowed(email)) return null;
+
+				const user = await prisma.user.findUnique({
+					where: { email },
+					select: {
+						id: true,
+						email: true,
+						name: true,
+						passwordHash: true,
+						role: true,
+					},
+				});
+
+				if (!user) return null;
+
+				const ok = await bcrypt.compare(password, user.passwordHash);
+				if (!ok) return null;
+
+				// En mode backoffice, le rôle vient de l'allowlist.
+				const expectedRole = getRoleForEmail(email);
+				if (user.role !== expectedRole) {
+					await prisma.user.update({
+						where: { email },
+						data: { role: expectedRole },
+					});
+					user.role = expectedRole;
+				}
+
+				return {
+					id: user.id,
+					email: user.email,
+					name: user.name,
+					role: user.role,
+				};
+			},
+		}),
+	],
+	session: {
+		strategy: "jwt",
+	},
+	pages: {
+		signIn: "/login",
+	},
+	callbacks: {
+		jwt: async ({ token, user }) => {
+			if (user) {
+				token.uid = user.id;
+				token.role = user.role;
+			}
+			return token;
+		},
+		session: async ({ session, token }) => {
+			if (session?.user) {
+				session.user.id = token.uid;
+				session.user.role = token.role;
+			}
+			return session;
+		},
+	},
+	secret: process.env.NEXTAUTH_SECRET,
+};

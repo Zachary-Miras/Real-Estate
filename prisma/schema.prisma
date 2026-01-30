@@ -19,12 +19,51 @@ model Property {
   title       String
   description String
   price       Float
+  rentPriceMonthly Float?
+  status      PropertyStatus? @default(DRAFT)
   propertyType PropertyType
+  // Champs "annonce" (optionnels)
+  surfaceM2   Int?
+  rooms       Int?
+  bedrooms    Int?
+  bathrooms   Int?
+  floor       Int?
+  totalFloors Int?
+  hasBalcony  Boolean?
+  hasTerrace  Boolean?
+  hasElevator Boolean?
+  hasParking  Boolean?
   address     Address    @relation(fields: [addressId], references: [id])
   addressId   String     @db.ObjectId
   photos      String[]
+  leads       Lead[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+}
+
+model Lead {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String
+  phone         String?
+  subject       String
+  message       String
+  pageUrl       String?
+  propertyTitle String?
+
+  propertyId String?  @db.ObjectId
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  SPAM
 }
 
 model Address {
@@ -42,5 +81,29 @@ enum PropertyType {
   APARTMENT
   CONDO
   LAND
+}
+
+enum PropertyStatus {
+  DRAFT
+  PUBLISHED
+  SOLD
+  RENTED
+  ARCHIVED
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  AGENT
+  ADMIN
 }
 

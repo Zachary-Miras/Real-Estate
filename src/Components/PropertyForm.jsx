@@ -3,7 +3,7 @@ import { useState } from "react";
 import { GrWheelchair } from "react-icons/gr";
 import { MdBalcony, MdGrass, MdPool } from "react-icons/md";
 import { PiGarageLight } from "react-icons/pi";
-import { TbFridge, TbStairsDown } from "react-icons/tb";
+import { TbAirConditioning, TbFridge, TbStairsDown } from "react-icons/tb";
 import PropertyFormOptions from "./PropertyFormOptions";
 
 const PropertyForm = () => {
@@ -61,20 +61,22 @@ const PropertyForm = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log({
-			propertyType,
-			images,
-			description,
-			phone,
-			address,
-			firstName,
-			lastName,
-			email,
-			superficie,
-			pieces,
-			sallesDeBain,
-			caracteristiques,
-		});
+		if (process.env.NODE_ENV !== "production") {
+			console.log({
+				propertyType,
+				images,
+				description,
+				phone,
+				address,
+				firstName,
+				lastName,
+				email,
+				superficie,
+				pieces,
+				sallesDeBain,
+				caracteristiques,
+			});
+		}
 	};
 
 	const handleCaracteristiqueChange = (e) => {
@@ -167,7 +169,7 @@ const PropertyForm = () => {
 					<PropertyFormOptions name='Cuisine équipée' icon={TbFridge} />
 				</div>
 				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
-					<PropertyFormOptions name='Climatisation' />
+					<PropertyFormOptions name='Climatisation' icon={TbAirConditioning} />
 				</div>
 				<div className='w-full md:w-1/2 lg:w-1/3 p-2'>
 					<PropertyFormOptions name='Balcon' icon={MdBalcony} />
