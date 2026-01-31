@@ -100,7 +100,9 @@ export default function MapExplore({ properties }) {
 	const [mode, setMode] = useState("buy");
 	const [query, setQuery] = useState("");
 	const [loadingMap, setLoadingMap] = useState(true);
+	const [mapError, setMapError] = useState(null);
 	const [visibleIds, setVisibleIds] = useState(null);
+	const mapsEnabled = Boolean(process.env.NEXT_PUBLIC_MAPS_API_KEY);
 
 	// Mobile bottom sheet
 	const SHEET_COLLAPSED_VH = 12;
@@ -163,6 +165,9 @@ export default function MapExplore({ properties }) {
 			try {
 				const loader = getGoogleMapsLoader();
 				if (!loader) {
+					setMapError(
+						"Google Maps n’est pas configuré (clé manquante sur Vercel).",
+					);
 					setLoadingMap(false);
 					return;
 				}
@@ -242,6 +247,9 @@ export default function MapExplore({ properties }) {
 				}
 			} catch (err) {
 				console.error("Google Maps init error:", err);
+				setMapError(
+					"Impossible de charger Google Maps (clé invalide, restrictions de domaine ou billing).",
+				);
 				setLoadingMap(false);
 			}
 		};
@@ -361,6 +369,14 @@ export default function MapExplore({ properties }) {
 				<div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
 					<div className='glass rounded-2xl px-5 py-3 text-sm text-white/80'>
 						Chargement de la carte…
+					</div>
+				</div>
+			) : null}
+
+			{!loadingMap && (mapError || !mapsEnabled) ? (
+				<div className='absolute inset-0 flex items-center justify-center px-6 pointer-events-none'>
+					<div className='glass rounded-2xl px-5 py-4 text-sm text-white/80 max-w-md text-center'>
+						{mapError || "Carte indisponible (Google Maps non configuré)."}
 					</div>
 				</div>
 			) : null}
