@@ -395,7 +395,7 @@ export default function MapExplore({ properties }) {
 			{/* Assombrissement léger pour intégrer la map au design */}
 			{showMap ? (
 				<>
-					<div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-black/15 via-black/0 to-black/15' />
+					<div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-black/10 via-black/0 to-black/10' />
 				</>
 			) : null}
 
