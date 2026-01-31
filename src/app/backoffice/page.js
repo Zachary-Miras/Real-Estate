@@ -1,24 +1,33 @@
 import prisma from "@/services/prismaClient";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function BackofficeHomePage() {
-	const [propertyCount, leadCount, lastProperties] = await Promise.all([
-		prisma.property.count(),
-		prisma.lead.count({ where: { status: "NEW" } }),
-		prisma.property.findMany({
-			orderBy: { createdAt: "desc" },
-			take: 5,
-			select: {
-				id: true,
-				title: true,
-				propertyType: true,
-				price: true,
-				rentPriceMonthly: true,
-				createdAt: true,
-				address: { select: { city: true } },
-			},
-		}),
-	]);
+	let propertyCount = 0;
+	let leadCount = 0;
+	let lastProperties = [];
+	try {
+		[propertyCount, leadCount, lastProperties] = await Promise.all([
+			prisma.property.count(),
+			prisma.lead.count({ where: { status: "NEW" } }),
+			prisma.property.findMany({
+				orderBy: { createdAt: "desc" },
+				take: 5,
+				select: {
+					id: true,
+					title: true,
+					propertyType: true,
+					price: true,
+					rentPriceMonthly: true,
+					createdAt: true,
+					address: { select: { city: true } },
+				},
+			}),
+		]);
+	} catch (err) {
+		console.error("Backoffice DB error:", err);
+	}
 
 	return (
 		<div className='max-w-6xl mx-auto'>

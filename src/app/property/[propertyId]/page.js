@@ -3,18 +3,25 @@ import { Property } from "@/Components/Property";
 import prisma from "@/services/prismaClient";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function page({ params }) {
 	const propertyId = params.propertyId;
 
 	async function getProperty() {
-		return prisma.property.findUnique({
-			where: {
-				id: propertyId,
-			},
-			include: {
-				address: true,
-			},
-		});
+		try {
+			return await prisma.property.findUnique({
+				where: {
+					id: propertyId,
+				},
+				include: {
+					address: true,
+				},
+			});
+		} catch (err) {
+			console.error("Property detail DB error:", err);
+			return null;
+		}
 	}
 
 	const property = await getProperty();

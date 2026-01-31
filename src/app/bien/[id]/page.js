@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiGrid, FiMapPin, FiMaximize2 } from "react-icons/fi";
 
+export const dynamic = "force-dynamic";
+
 function formatPrice(price) {
 	return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(
 		Number(price) || 0,
@@ -52,10 +54,15 @@ function formatAddress(address) {
 }
 
 async function getProperty(id) {
-	return prisma.property.findUnique({
-		where: { id },
-		include: { address: true },
-	});
+	try {
+		return await prisma.property.findUnique({
+			where: { id },
+			include: { address: true },
+		});
+	} catch (err) {
+		console.error("Bien detail DB error:", err);
+		return null;
+	}
 }
 
 export default async function BienPage({ params, searchParams }) {

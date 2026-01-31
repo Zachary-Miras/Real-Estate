@@ -3,6 +3,8 @@ import BuyFilters from "@/Components/BuyFilters";
 import { Header } from "@/Components/Header";
 import prisma from "@/services/prismaClient";
 
+export const dynamic = "force-dynamic";
+
 async function getProperties({ city, type, maxBudget }) {
 	const where = { status: "PUBLISHED" };
 	if (city) {
@@ -15,11 +17,16 @@ async function getProperties({ city, type, maxBudget }) {
 		where.price = { lte: maxBudget };
 	}
 
-	return prisma.property.findMany({
-		where,
-		orderBy: { createdAt: "desc" },
-		include: { address: true },
-	});
+	try {
+		return await prisma.property.findMany({
+			where,
+			orderBy: { createdAt: "desc" },
+			include: { address: true },
+		});
+	} catch (err) {
+		console.error("Acheter DB error:", err);
+		return [];
+	}
 }
 
 export default async function AcheterPage({ searchParams }) {

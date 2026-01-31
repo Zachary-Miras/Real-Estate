@@ -4,11 +4,7 @@ let loaderInstance = null;
 
 export function getGoogleMapsLoader() {
 	const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY;
-	if (!apiKey) {
-		throw new Error(
-			"Google Maps n’est pas configuré (NEXT_PUBLIC_MAPS_API_KEY manquante).",
-		);
-	}
+	if (!apiKey) return null;
 
 	// IMPORTANT: le Loader ne doit JAMAIS être instancié avec des options différentes.
 	// On force un singleton et on inclut 'places' pour couvrir autocomplete + maps.

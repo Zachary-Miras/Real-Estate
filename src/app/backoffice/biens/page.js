@@ -5,6 +5,8 @@ import prisma from "@/services/prismaClient";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
 	title: "Biens | Backoffice",
 	description: "Gestion des biens.",
@@ -103,18 +105,28 @@ export default async function BackofficeBiensPage({ searchParams }) {
 		orderBy = [{ rentPriceMonthly: "desc" }, { createdAt: "desc" }];
 	else if (sort === "TITLE_ASC") orderBy = [{ title: "asc" }];
 
-	const total = await prisma.property.count({ where });
+	let total = 0;
+	let properties = [];
+	try {
+		total = await prisma.property.count({ where });
+	} catch (err) {
+		console.error("Backoffice biens DB count error:", err);
+	}
 	const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 	const currentPage = Math.min(page, totalPages);
 	const skip = (currentPage - 1) * PAGE_SIZE;
-
-	const properties = await prisma.property.findMany({
-		where,
-		skip,
-		take: PAGE_SIZE,
-		orderBy,
-		include: { address: true },
-	});
+	try {
+		properties = await prisma.property.findMany({
+			where,
+			skip,
+			take: PAGE_SIZE,
+			orderBy,
+			include: { address: true },
+		});
+	} catch (err) {
+		console.error("Backoffice biens DB list error:", err);
+		properties = [];
+	}
 
 	return (
 		<div className='max-w-6xl mx-auto'>

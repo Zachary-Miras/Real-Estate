@@ -160,79 +160,89 @@ export default function MapExplore({ properties }) {
 		let cancelled = false;
 
 		const init = async () => {
-			const loader = getGoogleMapsLoader();
-			const { Map } = await loader.importLibrary("maps");
-			const { Geocoder } = await loader.importLibrary("geocoding");
-			const { AdvancedMarkerElement } = await loader.importLibrary("marker");
-			if (cancelled) return;
-
-			if (!geocoderRef.current) geocoderRef.current = new Geocoder();
-
-			if (!mapRef.current) {
-				mapRef.current = new Map(mapContainerRef.current, {
-					center: { lat: 48.8566, lng: 2.3522 },
-					zoom: 12,
-					minZoom: 4,
-					...(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID
-						? { mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID }
-						: {}),
-					styles: MAP_STYLE_PREMIUM_MUTED,
-					disableDefaultUI: true,
-					zoomControl: true,
-					gestureHandling: "greedy",
-				});
-				setLoadingMap(false);
-			}
-
-			const geocode = (address) => {
-				const cached = geocodeCacheRef.current.get(address);
-				if (cached) return Promise.resolve(cached);
-				return new Promise((resolve, reject) => {
-					geocoderRef.current.geocode({ address }, (results, status) => {
-						if (status === "OK") {
-							const loc = results[0].geometry.location;
-							geocodeCacheRef.current.set(address, loc);
-							resolve(loc);
-						} else {
-							reject(status);
-						}
-					});
-				});
-			};
-
-			for (const p of baseList) {
-				if (!p.addressText) continue;
-				if (markersByIdRef.current.has(p.id)) continue;
-				try {
-					const position = await geocode(p.addressText);
-					if (cancelled) return;
-					const marker = new AdvancedMarkerElement({
-						map: mapRef.current,
-						position,
-						content: createGoldPin(),
-					});
-					markersPosRef.current.set(p.id, position);
-					markersByIdRef.current.set(p.id, marker);
-
-					if (marker.content) {
-						marker.content.addEventListener("mouseenter", () => {
-							setHoveredId(p.id);
-						});
-						marker.content.addEventListener("mouseleave", () => {
-							setHoveredId((prev) => (prev === p.id ? null : prev));
-						});
-					}
-
-					marker.addListener("gmp-click", () => {
-						setActiveId(p.id);
-						mapRef.current.panTo(position);
-						mapRef.current.setZoom(15);
-						const el = cardRefsRef.current.get(p.id);
-						if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-					});
-				} catch {
-					// ignore geocode failures
+			try {
+				const loader = getGoogleMapsLoader();
+				if (!loader) {
+					setLoadingMap(false);
+					return;
 				}
+				const { Map } = await loader.importLibrary("maps");
+				const { Geocoder } = await loader.importLibrary("geocoding");
+				const { AdvancedMarkerElement } = await loader.importLibrary("marker");
+				if (cancelled) return;
+
+				if (!geocoderRef.current) geocoderRef.current = new Geocoder();
+
+				if (!mapRef.current) {
+					mapRef.current = new Map(mapContainerRef.current, {
+						center: { lat: 48.8566, lng: 2.3522 },
+						zoom: 12,
+						minZoom: 4,
+						...(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID
+							? { mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID }
+							: {}),
+						styles: MAP_STYLE_PREMIUM_MUTED,
+						disableDefaultUI: true,
+						zoomControl: true,
+						gestureHandling: "greedy",
+					});
+					setLoadingMap(false);
+				}
+
+				const geocode = (address) => {
+					const cached = geocodeCacheRef.current.get(address);
+					if (cached) return Promise.resolve(cached);
+					return new Promise((resolve, reject) => {
+						geocoderRef.current.geocode({ address }, (results, status) => {
+							if (status === "OK") {
+								const loc = results[0].geometry.location;
+								geocodeCacheRef.current.set(address, loc);
+								resolve(loc);
+							} else {
+								reject(status);
+							}
+						});
+					});
+				};
+
+				for (const p of baseList) {
+					if (!p.addressText) continue;
+					if (markersByIdRef.current.has(p.id)) continue;
+					try {
+						const position = await geocode(p.addressText);
+						if (cancelled) return;
+						const marker = new AdvancedMarkerElement({
+							map: mapRef.current,
+							position,
+							content: createGoldPin(),
+						});
+						markersPosRef.current.set(p.id, position);
+						markersByIdRef.current.set(p.id, marker);
+
+						if (marker.content) {
+							marker.content.addEventListener("mouseenter", () => {
+								setHoveredId(p.id);
+							});
+							marker.content.addEventListener("mouseleave", () => {
+								setHoveredId((prev) => (prev === p.id ? null : prev));
+							});
+						}
+
+						marker.addListener("gmp-click", () => {
+							setActiveId(p.id);
+							mapRef.current.panTo(position);
+							mapRef.current.setZoom(15);
+							const el = cardRefsRef.current.get(p.id);
+							if (el)
+								el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+						});
+					} catch {
+						// ignore geocode failures
+					}
+				}
+			} catch (err) {
+				console.error("Google Maps init error:", err);
+				setLoadingMap(false);
 			}
 		};
 

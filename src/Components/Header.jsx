@@ -4,7 +4,12 @@ import Link from "next/link";
 import HeaderClient from "./HeaderClient";
 
 export async function Header({ className = "" } = {}) {
-	const session = await getServerSession(authOptions);
+	let session = null;
+	try {
+		session = await getServerSession(authOptions);
+	} catch {
+		session = null;
+	}
 	const role = session?.user?.role;
 	const canBackoffice = role === "ADMIN" || role === "AGENT";
 	return (

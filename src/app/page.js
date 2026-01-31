@@ -6,22 +6,29 @@ import HeroSearch from "../Components/HeroSearch";
 import MapWrapper from "../Components/MapWrapper";
 import PropertyCard from "../Components/PropertyCard";
 
+export const dynamic = "force-dynamic";
+
 async function getHomeData() {
-	const featured = await prisma.property.findMany({
-		where: { status: "PUBLISHED" },
-		take: 2,
-		orderBy: { createdAt: "desc" },
-		include: { address: true },
-	});
+	try {
+		const featured = await prisma.property.findMany({
+			where: { status: "PUBLISHED" },
+			take: 2,
+			orderBy: { createdAt: "desc" },
+			include: { address: true },
+		});
 
-	const recent = await prisma.property.findMany({
-		where: { status: "PUBLISHED" },
-		take: 4,
-		orderBy: { createdAt: "desc" },
-		include: { address: true },
-	});
+		const recent = await prisma.property.findMany({
+			where: { status: "PUBLISHED" },
+			take: 4,
+			orderBy: { createdAt: "desc" },
+			include: { address: true },
+		});
 
-	return { featured, recent };
+		return { featured, recent };
+	} catch (err) {
+		console.error("Home DB error:", err);
+		return { featured: [], recent: [] };
+	}
 }
 
 async function getRandomCitiesFromDb({ size = 6 } = {}) {

@@ -1,12 +1,19 @@
 import MapExplore from "@/Components/MapExplore";
 import prisma from "@/services/prismaClient";
 
+export const dynamic = "force-dynamic";
+
 async function getProperties() {
-	return prisma.property.findMany({
-		where: { status: "PUBLISHED" },
-		orderBy: { createdAt: "desc" },
-		include: { address: true },
-	});
+	try {
+		return await prisma.property.findMany({
+			where: { status: "PUBLISHED" },
+			orderBy: { createdAt: "desc" },
+			include: { address: true },
+		});
+	} catch (err) {
+		console.error("Carte DB error:", err);
+		return [];
+	}
 }
 
 export default async function CartePage() {

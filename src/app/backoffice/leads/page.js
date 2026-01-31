@@ -2,6 +2,8 @@ import BackofficeLeadStatus from "@/Components/backoffice/leads/BackofficeLeadSt
 import prisma from "@/services/prismaClient";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
 	title: "Leads | Backoffice",
 	description: "Demandes de contact.",
@@ -32,14 +34,20 @@ export default async function BackofficeLeadsPage({ searchParams }) {
 	const where = {};
 	if (status && status !== "ALL") where.status = status;
 
-	const [leadCount, leads] = await Promise.all([
-		prisma.lead.count({ where }),
-		prisma.lead.findMany({
-			where,
-			orderBy: { createdAt: "desc" },
-			include: { property: { select: { id: true, title: true } } },
-		}),
-	]);
+	let leadCount = 0;
+	let leads = [];
+	try {
+		[leadCount, leads] = await Promise.all([
+			prisma.lead.count({ where }),
+			prisma.lead.findMany({
+				where,
+				orderBy: { createdAt: "desc" },
+				include: { property: { select: { id: true, title: true } } },
+			}),
+		]);
+	} catch (err) {
+		console.error("Backoffice leads DB error:", err);
+	}
 
 	return (
 		<div className='max-w-6xl mx-auto'>

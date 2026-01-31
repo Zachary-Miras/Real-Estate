@@ -3,6 +3,8 @@ import BuyFilters from "@/Components/BuyFilters";
 import { Header } from "@/Components/Header";
 import prisma from "@/services/prismaClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
 	title: "Louer | Real Estate",
 	description: "Trouvez votre location premium.",
@@ -20,11 +22,16 @@ async function getProperties({ city, type, maxBudget }) {
 		where.rentPriceMonthly = { lte: maxBudget };
 	}
 
-	return prisma.property.findMany({
-		where,
-		orderBy: { createdAt: "desc" },
-		include: { address: true },
-	});
+	try {
+		return await prisma.property.findMany({
+			where,
+			orderBy: { createdAt: "desc" },
+			include: { address: true },
+		});
+	} catch (err) {
+		console.error("Louer DB error:", err);
+		return [];
+	}
 }
 
 export default async function LouerPage({ searchParams }) {
