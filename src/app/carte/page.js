@@ -8,7 +8,22 @@ async function getProperties() {
 		return await prisma.property.findMany({
 			where: { status: "PUBLISHED" },
 			orderBy: { createdAt: "desc" },
-			include: { address: true },
+			select: {
+				id: true,
+				title: true,
+				price: true,
+				rentPriceMonthly: true,
+				photos: true,
+				address: {
+					select: {
+						street: true,
+						city: true,
+						state: true,
+						zipCode: true,
+						country: true,
+					},
+				},
+			},
 		});
 	} catch (err) {
 		console.error("Carte DB error:", err);

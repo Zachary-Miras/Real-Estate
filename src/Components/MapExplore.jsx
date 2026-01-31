@@ -18,10 +18,12 @@ const MAP_STYLE_PREMIUM_MUTED = [
 	// Désaturer / calmer la carte
 	{
 		elementType: "geometry",
-		stylers: [{ saturation: -85 }, { lightness: 10 }],
+		stylers: [{ saturation: -55 }, { lightness: 18 }],
 	},
-	{ elementType: "labels.text.fill", stylers: [{ color: "#7a828e" }] },
-	{ elementType: "labels.text.stroke", stylers: [{ color: "#101826" }] },
+	{ elementType: "labels.text.fill", stylers: [{ color: "#6b7280" }] },
+	// Le stroke sombre rend la carte "trop contrastée" (effet contour marqué).
+	// On le retire pour un rendu plus doux.
+	{ elementType: "labels.text.stroke", stylers: [{ visibility: "off" }] },
 
 	// Masquer la plupart des POI
 	{ featureType: "poi", stylers: [{ visibility: "off" }] },
@@ -31,7 +33,7 @@ const MAP_STYLE_PREMIUM_MUTED = [
 	{
 		featureType: "road",
 		elementType: "geometry",
-		stylers: [{ color: "#8b93a0" }, { lightness: 35 }, { saturation: -60 }],
+		stylers: [{ color: "#cbd5e1" }, { lightness: 26 }, { saturation: -35 }],
 	},
 	{
 		featureType: "road",
@@ -43,7 +45,7 @@ const MAP_STYLE_PREMIUM_MUTED = [
 	{
 		featureType: "water",
 		elementType: "geometry",
-		stylers: [{ color: "#bcd0e6" }, { lightness: 15 }, { saturation: -20 }],
+		stylers: [{ color: "#dbeafe" }, { lightness: 18 }, { saturation: -10 }],
 	},
 	{
 		featureType: "water",
@@ -395,7 +397,7 @@ export default function MapExplore({ properties }) {
 			{/* Assombrissement léger pour intégrer la map au design */}
 			{showMap ? (
 				<>
-					<div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-black/10 via-black/0 to-black/10' />
+					<div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-black/0 via-black/0 to-black/0' />
 				</>
 			) : null}
 
