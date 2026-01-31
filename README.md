@@ -79,6 +79,7 @@ Les variables sont listées dans `.env.example`.
 | --------------------------------- | ----------: | ------------------------------------------- |
 | `DATABASE_URL`                    |         Oui | Connexion MongoDB utilisée par Prisma       |
 | `NEXT_PUBLIC_MAPS_API_KEY`        | Selon usage | Clé Google Maps (affichage carte)           |
+| `NEXT_PUBLIC_GOOGLE_MAP_ID`       | Non         | Map ID Google (style/affichage carte)       |
 | `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | Selon usage | EmailJS — Template                          |
 | `NEXT_PUBLIC_EMAILJS_SERVICE_ID`  | Selon usage | EmailJS — Service                           |
 | `NEXT_PUBLIC_EMAILJS_USER_ID`     | Selon usage | EmailJS — Public Key / User ID              |
@@ -163,6 +164,7 @@ Entrées utiles:
 Recommandé: Vercel + MongoDB Atlas.
 
 - Configure les variables d’environnement (au minimum `DATABASE_URL`, `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `ADMIN_EMAILS`)
+- Si tu utilises une Map ID Google, configure aussi `NEXT_PUBLIC_GOOGLE_MAP_ID`
 - Assure-toi que l’URL de prod est cohérente avec `NEXTAUTH_URL`
 - Après déploiement, applique le schéma si nécessaire: `npx prisma db push`
 

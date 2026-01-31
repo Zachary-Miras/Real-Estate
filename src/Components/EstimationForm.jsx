@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 function StepPill({ index, label, active, done }) {
 	return (
-		<div className='flex items-center gap-3'>
+		<div className='flex items-center gap-3 min-w-0'>
 			<div
 				className={`h-9 w-9 rounded-full flex items-center justify-center font-bold border ${
 					done
@@ -15,7 +15,9 @@ function StepPill({ index, label, active, done }) {
 				}`}>
 				{index}
 			</div>
-			<div className='text-sm font-semibold text-black/70'>{label}</div>
+			<div className='text-sm font-semibold text-black/70 min-w-0 break-words'>
+				{label}
+			</div>
 		</div>
 	);
 }

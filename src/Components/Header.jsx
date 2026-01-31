@@ -9,7 +9,8 @@ export async function Header({ className = "" } = {}) {
 	const canBackoffice = role === "ADMIN" || role === "AGENT";
 	return (
 		<header
-			className={`w-full px-4 sm:px-6 md:px-12 pt-4 sm:pt-6 ${className}`.trim()}>
+			data-site-header='true'
+			className={`relative z-[90] w-full px-4 sm:px-6 md:px-12 pt-4 sm:pt-6 ${className}`.trim()}>
 			<div className='max-w-6xl mx-auto'>
 				<div className='glass rounded-3xl px-4 sm:px-5 md:px-7 py-3 sm:py-4 flex items-center gap-4 sm:gap-6'>
 					{/* Gauche */}

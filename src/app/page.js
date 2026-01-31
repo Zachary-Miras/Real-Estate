@@ -85,14 +85,14 @@ export default async function Home() {
 		.filter(Boolean);
 
 	return (
-		<div className='min-h-screen'>
+		<div className='min-h-screen overflow-x-hidden'>
 			<Header />
 
 			{/* 1) HERO */}
-			<section className='px-6 md:px-12 pt-4 md:pt-8'>
-				<div className='max-w-6xl mx-auto grid grid-cols-12 gap-10 items-start'>
+			<section className='px-4 sm:px-6 md:px-12 pt-3 sm:pt-4 md:pt-8'>
+				<div className='max-w-6xl mx-auto grid grid-cols-12 gap-6 sm:gap-10 items-start'>
 					<div className='col-span-12 lg:col-span-6'>
-						<div className='text-[44px] md:text-[56px] font-bold leading-[1.02] tracking-tight'>
+						<div className='text-3xl sm:text-[44px] md:text-[56px] font-bold leading-[1.05] sm:leading-[1.02] tracking-tight'>
 							Luxury Real Estate
 							<br />
 							<AnimatedCity cities={cities} />
@@ -101,14 +101,14 @@ export default async function Home() {
 							Biens d’exception, sélectionnés avec soin. Trouvez l’adresse
 							parfaite.
 						</div>
-						<div className='mt-8'>
+						<div className='mt-6 sm:mt-8'>
 							<HeroSearch />
 						</div>
 					</div>
 
 					<div className='col-span-12 lg:col-span-6'>
 						<div className='glass rounded-[28px] p-3'>
-							<div className='relative rounded-[24px] overflow-hidden h-[320px] md:h-[420px]'>
+							<div className='relative rounded-[24px] overflow-hidden h-[240px] sm:h-[320px] md:h-[420px]'>
 								<Image
 									src='https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=1800&q=80'
 									alt='Appartement de luxe'
@@ -124,21 +124,24 @@ export default async function Home() {
 			</section>
 
 			{/* 2) Section centrale */}
-			<section className='px-6 md:px-12 mt-14 md:mt-20'>
+			<section className='px-4 sm:px-6 md:px-12 mt-12 sm:mt-14 md:mt-20'>
 				<div className='max-w-6xl mx-auto grid grid-cols-12 gap-10 items-stretch'>
-					<div className='col-span-12 lg:col-span-6 flex flex-col gap-6'>
+					<div className='col-span-12 lg:col-span-6 min-w-0 flex flex-col gap-6 max-w-[640px] lg:max-w-none mx-auto w-full'>
 						{featured.slice(0, 2).map((p) => (
 							<PropertyCard key={p.id} property={p} variant='stack' />
 						))}
 					</div>
 
-					<div className='col-span-12 lg:col-span-6'>
-						<div className='glass rounded-[28px] p-4 h-full'>
+					<div className='col-span-12 lg:col-span-6 min-w-0 w-full max-w-[640px] lg:max-w-none mx-auto'>
+						<div className='glass rounded-[28px] p-4 h-full w-full overflow-hidden'>
 							<div className='text-sm font-semibold tracking-wide mb-3'>
 								Carte
 							</div>
-							<div className='h-[520px] rounded-[24px] overflow-hidden'>
-								<MapWrapper markers={markers} />
+							<div className='h-[340px] sm:h-[520px] w-full max-w-full min-w-0 rounded-[24px] overflow-hidden relative'>
+								<MapWrapper
+									markers={markers}
+									className='h-full w-full max-w-full min-w-0'
+								/>
 							</div>
 						</div>
 					</div>
@@ -146,7 +149,7 @@ export default async function Home() {
 			</section>
 
 			{/* 3) Biens récents */}
-			<section className='px-6 md:px-12 mt-14 md:mt-20 pb-20'>
+			<section className='px-4 sm:px-6 md:px-12 mt-12 sm:mt-14 md:mt-20 pb-20'>
 				<div className='max-w-6xl mx-auto'>
 					<div className='flex items-end justify-between mb-8'>
 						<div>
@@ -159,7 +162,7 @@ export default async function Home() {
 						</div>
 					</div>
 
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+					<div className='grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-[640px] lg:max-w-none mx-auto'>
 						{recent.slice(0, 4).map((p) => (
 							<PropertyCard key={p.id} property={p} variant='grid' />
 						))}

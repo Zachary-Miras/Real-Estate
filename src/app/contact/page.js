@@ -14,11 +14,11 @@ export default function ContactPage() {
 		<div className='min-h-screen'>
 			<Header />
 
-			<section className='px-6 md:px-12 pt-10 pb-10'>
+			<section className='px-4 sm:px-6 md:px-12 pt-10 pb-10'>
 				<div className='max-w-6xl mx-auto'>
-					<div className='grid grid-cols-12 gap-10 items-start'>
-						<div className='col-span-12 lg:col-span-5'>
-							<div className='glass rounded-3xl p-8'>
+					<div className='grid grid-cols-12 gap-6 md:gap-10 items-start'>
+						<div className='col-span-12 lg:col-span-5 min-w-0'>
+							<div className='glass rounded-3xl p-6 sm:p-8'>
 								<div className='text-3xl font-bold'>Contact</div>
 								<div className='mt-3 text-[color:var(--muted-on-dark)] leading-relaxed'>
 									Une question, une visite, une estimation ? Écris-nous et on te
@@ -32,7 +32,7 @@ export default function ContactPage() {
 							</div>
 						</div>
 
-						<div className='col-span-12 lg:col-span-7'>
+						<div className='col-span-12 lg:col-span-7 min-w-0 w-full'>
 							<MailForm />
 						</div>
 					</div>

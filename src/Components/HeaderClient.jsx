@@ -10,6 +10,7 @@ export default function HeaderClient({
 	profileLabel,
 }) {
 	const [open, setOpen] = useState(false);
+	const [overlayTop, setOverlayTop] = useState(0);
 
 	const links = useMemo(
 		() => [
@@ -26,10 +27,37 @@ export default function HeaderClient({
 
 	useEffect(() => {
 		if (!open) return;
-		const prevOverflow = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
+		const body = document.body;
+		const docEl = document.documentElement;
+		const prevBodyOverflow = body.style.overflow;
+		const prevHtmlOverflow = docEl.style.overflow;
+
+		body.style.overflow = "hidden";
+		docEl.style.overflow = "hidden";
 		return () => {
-			document.body.style.overflow = prevOverflow;
+			body.style.overflow = prevBodyOverflow;
+			docEl.style.overflow = prevHtmlOverflow;
+		};
+	}, [open]);
+
+	useEffect(() => {
+		if (!open) return;
+		const compute = () => {
+			const header = document.querySelector("[data-site-header='true']");
+			if (!header) {
+				setOverlayTop(0);
+				return;
+			}
+			const rect = header.getBoundingClientRect();
+			// on démarre juste sous le header (petit espace)
+			setOverlayTop(Math.max(0, Math.round(rect.bottom)));
+		};
+		compute();
+		window.addEventListener("resize", compute);
+		window.addEventListener("scroll", compute, { passive: true });
+		return () => {
+			window.removeEventListener("resize", compute);
+			window.removeEventListener("scroll", compute);
 		};
 	}, [open]);
 
@@ -56,14 +84,25 @@ export default function HeaderClient({
 				<div className='fixed inset-0 z-[80]'>
 					<button
 						type='button'
-						className='absolute inset-0 bg-black/60'
+						className='absolute inset-x-0 bottom-0 bg-black/55'
+						style={{ top: overlayTop }}
 						onClick={() => setOpen(false)}
 						aria-label='Fermer le menu'
 					/>
 
-					<div className='absolute top-4 left-4 right-4 rounded-3xl border border-white/10 bg-[#0B1220]/80 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.55)] overflow-hidden'>
+					<div
+						className='absolute left-4 right-4 max-w-md mx-auto rounded-3xl border border-white/10 bg-[#0B1220]/80 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.55)] overflow-hidden'
+						style={{
+							top: overlayTop + 12,
+							maxHeight: `calc(100vh - ${overlayTop + 24}px)`,
+						}}>
 						<div className='px-4 py-3 flex items-center justify-between border-b border-white/10'>
-							<div className='text-sm font-semibold text-white/90'>Menu</div>
+							<div>
+								<div className='text-[11px] tracking-[0.28em] uppercase text-white/50'>
+									Real Estate
+								</div>
+								<div className='text-sm font-semibold text-white/90'>Menu</div>
+							</div>
 							<button
 								type='button'
 								onClick={() => setOpen(false)}
@@ -73,7 +112,7 @@ export default function HeaderClient({
 							</button>
 						</div>
 
-						<nav className='p-2'>
+						<nav className='p-2 overflow-auto'>
 							{links.map((l) => (
 								<Link
 									key={l.href}

@@ -1,7 +1,7 @@
 import { getGoogleMapsLoader } from "@/services/googleMapsLoader";
 import { useEffect, useRef } from "react";
 
-export default function Map({ markers }) {
+export default function Map({ markers, className = "" }) {
 	const mapRef = useRef(null);
 	const DEFAULT_ZOOM = 12;
 
@@ -90,9 +90,5 @@ export default function Map({ markers }) {
 		};
 	}, [markers]);
 
-	return (
-		<div className='glass rounded-3xl p-2 h-full w-full'>
-			<div className='h-full w-full rounded-3xl' ref={mapRef} />
-		</div>
-	);
+	return <div ref={mapRef} className={`h-full w-full ${className}`.trim()} />;
 }

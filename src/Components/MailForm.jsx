@@ -103,7 +103,9 @@ export default function MailForm({ propertyTitle, propertyId } = {}) {
 		"w-full h-11 rounded-xl bg-white/95 text-black px-4 outline-none border border-black/10 focus:border-[color:var(--accent-gold)] focus:ring-4 focus:ring-[color:var(--accent-gold)]/20";
 
 	return (
-		<form onSubmit={sendEmail} className='card p-6 md:p-8 text-black'>
+		<form
+			onSubmit={sendEmail}
+			className='card w-full max-w-full min-w-0 p-6 md:p-8 text-black'>
 			<div className='flex items-start justify-between gap-4'>
 				<div>
 					<div className='text-2xl font-bold'>Contacter l’agence</div>

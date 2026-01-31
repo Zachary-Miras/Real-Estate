@@ -8,14 +8,14 @@ export const metadata = {
 
 export default function EstimationPage() {
 	return (
-		<div className='min-h-screen bg-[#071a3a]'>
+		<div className='min-h-screen bg-[#071a3a] overflow-x-hidden'>
 			<Header />
 
-			<section className='px-6 md:px-12 pt-10 pb-20'>
+			<section className='px-4 sm:px-6 md:px-12 pt-10 pb-20'>
 				<div className='max-w-6xl mx-auto'>
-					<div className='grid grid-cols-12 gap-10 items-start'>
+					<div className='grid grid-cols-12 gap-6 md:gap-10 items-start'>
 						<div className='col-span-12 lg:col-span-5'>
-							<div className='glass rounded-3xl p-8'>
+							<div className='glass rounded-3xl p-6 sm:p-8'>
 								<div className='text-3xl font-bold leading-tight'>
 									Estimation en 3 étapes
 								</div>

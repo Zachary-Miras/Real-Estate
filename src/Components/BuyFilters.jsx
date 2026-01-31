@@ -52,26 +52,26 @@ export default function BuyFilters({
 
 	return (
 		<div
-			className='glass rounded-3xl px-4 md:px-6 py-4 flex flex-wrap items-center gap-3'
+			className='glass rounded-3xl px-4 md:px-6 py-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3'
 			onKeyDown={onKeyDown}>
-			<div className='text-xs uppercase tracking-[0.22em] text-white/55 mr-1'>
+			<div className='text-xs uppercase tracking-[0.22em] text-white/55 sm:mr-1'>
 				Filtres
 			</div>
 
-			<div className='flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-4 h-10'>
+			<div className='w-full sm:w-auto flex items-center gap-2 bg-white/10 border border-white/15 rounded-2xl sm:rounded-full px-4 h-11 sm:h-10'>
 				<span className='text-xs text-white/60'>Ville</span>
 				<input
-					className='bg-transparent outline-none text-sm w-[140px] placeholder:text-white/45'
+					className='bg-transparent outline-none text-sm flex-1 sm:w-[140px] placeholder:text-white/45 min-w-0'
 					value={city}
 					onChange={(e) => setCity(e.target.value)}
 					placeholder='Paris'
 				/>
 			</div>
 
-			<div className='flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-4 h-10'>
+			<div className='w-full sm:w-auto flex items-center gap-2 bg-white/10 border border-white/15 rounded-2xl sm:rounded-full px-4 h-11 sm:h-10'>
 				<span className='text-xs text-white/60'>Type</span>
 				<select
-					className='bg-transparent outline-none text-sm text-white/90'
+					className='bg-transparent outline-none text-sm text-white/90 flex-1 min-w-0'
 					value={type}
 					onChange={(e) => setType(e.target.value)}>
 					<option value='ALL'>Tous</option>
@@ -82,10 +82,10 @@ export default function BuyFilters({
 				</select>
 			</div>
 
-			<div className='flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-4 h-10'>
+			<div className='w-full sm:w-auto flex items-center gap-2 bg-white/10 border border-white/15 rounded-2xl sm:rounded-full px-4 h-11 sm:h-10'>
 				<span className='text-xs text-white/60'>Budget</span>
 				<input
-					className='bg-transparent outline-none text-sm w-[120px] placeholder:text-white/45'
+					className='bg-transparent outline-none text-sm flex-1 sm:w-[120px] placeholder:text-white/45 min-w-0'
 					type='number'
 					min={0}
 					value={maxBudget}
@@ -97,11 +97,11 @@ export default function BuyFilters({
 			<button
 				type='button'
 				onClick={applyFilters}
-				className='btn-gold h-10 px-6 inline-flex items-center justify-center font-semibold'>
+				className='btn-gold h-11 sm:h-10 px-6 inline-flex items-center justify-center font-semibold w-full sm:w-auto'>
 				Rechercher
 			</button>
 
-			<div className='ml-auto text-xs text-white/60 hidden md:block'>
+			<div className='text-xs text-white/60 sm:ml-auto'>
 				Max: {budgetLabel} €
 			</div>
 		</div>

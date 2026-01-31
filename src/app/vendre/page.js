@@ -11,14 +11,14 @@ export const metadata = {
 
 export default function VendrePage() {
 	return (
-		<div className='min-h-screen'>
+		<div className='min-h-screen overflow-x-hidden'>
 			<Header />
 
 			{/* HERO */}
-			<section className='px-6 md:px-12 pt-4 md:pt-8'>
-				<div className='max-w-6xl mx-auto grid grid-cols-12 gap-10 items-start'>
-					<div className='col-span-12 lg:col-span-6'>
-						<div className='text-[44px] md:text-[56px] font-bold leading-[1.02] tracking-tight'>
+			<section className='px-4 sm:px-6 md:px-12 pt-4 md:pt-8'>
+				<div className='max-w-6xl mx-auto grid grid-cols-12 gap-6 md:gap-10 items-start'>
+					<div className='col-span-12 lg:col-span-6 min-w-0'>
+						<div className='text-3xl sm:text-[44px] md:text-[56px] font-bold leading-[1.02] tracking-tight break-words'>
 							Vendez votre bien
 							<br />
 							au meilleur prix
@@ -30,12 +30,12 @@ export default function VendrePage() {
 						<div className='mt-8 flex flex-col sm:flex-row gap-3'>
 							<Link
 								href='/estimation'
-								className='btn-gold h-11 px-7 inline-flex items-center justify-center font-semibold'>
+								className='btn-gold h-11 w-full sm:w-auto px-5 sm:px-7 flex items-center justify-center text-center whitespace-normal font-semibold'>
 								Obtenir une estimation
 							</Link>
 							<Link
 								href='/contact'
-								className='h-11 px-7 inline-flex items-center justify-center font-semibold rounded-full border border-white/20 bg-white/5 hover:bg-white/10 transition-colors'>
+								className='h-11 w-full sm:w-auto px-5 sm:px-7 flex items-center justify-center text-center whitespace-normal font-semibold rounded-full border border-white/20 bg-white/5 hover:bg-white/10 transition-colors'>
 								Parler à un conseiller
 							</Link>
 						</div>
@@ -44,8 +44,8 @@ export default function VendrePage() {
 						</div>
 					</div>
 
-					<div className='col-span-12 lg:col-span-6'>
-						<div className='glass rounded-[28px] p-3'>
+					<div className='col-span-12 lg:col-span-6 min-w-0'>
+						<div className='glass rounded-[28px] p-3 w-full max-w-full'>
 							<div className='relative rounded-[24px] overflow-hidden h-[320px] md:h-[420px]'>
 								<Image
 									src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1800&q=80'
@@ -62,7 +62,7 @@ export default function VendrePage() {
 			</section>
 
 			{/* 3 ÉTAPES */}
-			<section className='px-6 md:px-12 mt-14 md:mt-20 pb-20'>
+			<section className='px-4 sm:px-6 md:px-12 mt-14 md:mt-20 pb-20'>
 				<div className='max-w-6xl mx-auto'>
 					<div className='flex items-end justify-between gap-6 mb-8'>
 						<div>
