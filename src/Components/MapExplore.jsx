@@ -94,15 +94,16 @@ export default function MapExplore({ properties }) {
 
 	const listContainerRef = useRef(null);
 	const cardRefsRef = useRef(new Map());
+	const mapsEnabled = Boolean(process.env.NEXT_PUBLIC_MAPS_API_KEY);
 
 	const [activeId, setActiveId] = useState(properties?.[0]?.id || null);
 	const [hoveredId, setHoveredId] = useState(null);
 	const [mode, setMode] = useState("buy");
 	const [query, setQuery] = useState("");
-	const [loadingMap, setLoadingMap] = useState(true);
+	const [loadingMap, setLoadingMap] = useState(mapsEnabled);
 	const [mapError, setMapError] = useState(null);
 	const [visibleIds, setVisibleIds] = useState(null);
-	const mapsEnabled = Boolean(process.env.NEXT_PUBLIC_MAPS_API_KEY);
+	const showMap = mapsEnabled && !mapError;
 
 	// Mobile bottom sheet
 	const SHEET_COLLAPSED_VH = 12;
@@ -173,7 +174,12 @@ export default function MapExplore({ properties }) {
 				}
 				const { Map } = await loader.importLibrary("maps");
 				const { Geocoder } = await loader.importLibrary("geocoding");
-				const { AdvancedMarkerElement } = await loader.importLibrary("marker");
+				const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAP_ID;
+				const useAdvancedMarkers = Boolean(mapId);
+				const markerLib = useAdvancedMarkers
+					? await loader.importLibrary("marker")
+					: null;
+				const AdvancedMarkerElement = markerLib?.AdvancedMarkerElement;
 				if (cancelled) return;
 
 				if (!geocoderRef.current) geocoderRef.current = new Geocoder();
@@ -183,9 +189,7 @@ export default function MapExplore({ properties }) {
 						center: { lat: 48.8566, lng: 2.3522 },
 						zoom: 12,
 						minZoom: 4,
-						...(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID
-							? { mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID }
-							: {}),
+						...(mapId ? { mapId } : {}),
 						styles: MAP_STYLE_PREMIUM_MUTED,
 						disableDefaultUI: true,
 						zoomControl: true,
@@ -216,15 +220,30 @@ export default function MapExplore({ properties }) {
 					try {
 						const position = await geocode(p.addressText);
 						if (cancelled) return;
-						const marker = new AdvancedMarkerElement({
-							map: mapRef.current,
-							position,
-							content: createGoldPin(),
-						});
+						const marker =
+							useAdvancedMarkers && AdvancedMarkerElement
+								? new AdvancedMarkerElement({
+										map: mapRef.current,
+										position,
+										content: createGoldPin(),
+									})
+								: new google.maps.Marker({
+										map: mapRef.current,
+										position,
+										icon: {
+											path: google.maps.SymbolPath.CIRCLE,
+											fillColor: "#d7b76a",
+											fillOpacity: 1,
+											scale: 7,
+											strokeColor: "#ffffff",
+											strokeOpacity: 0.9,
+											strokeWeight: 1,
+										},
+									});
 						markersPosRef.current.set(p.id, position);
 						markersByIdRef.current.set(p.id, marker);
 
-						if (marker.content) {
+						if (useAdvancedMarkers && marker.content) {
 							marker.content.addEventListener("mouseenter", () => {
 								setHoveredId(p.id);
 							});
@@ -233,14 +252,16 @@ export default function MapExplore({ properties }) {
 							});
 						}
 
-						marker.addListener("gmp-click", () => {
+						const onClick = () => {
 							setActiveId(p.id);
 							mapRef.current.panTo(position);
 							mapRef.current.setZoom(15);
 							const el = cardRefsRef.current.get(p.id);
 							if (el)
 								el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-						});
+						};
+						if (useAdvancedMarkers) marker.addListener("gmp-click", onClick);
+						else marker.addListener("click", onClick);
 					} catch {
 						// ignore geocode failures
 					}
@@ -268,7 +289,13 @@ export default function MapExplore({ properties }) {
 				: new Set(filteredList.map((p) => p.id));
 
 		for (const [id, marker] of markersByIdRef.current.entries()) {
-			marker.map = ids.has(id) ? mapRef.current : null;
+			// AdvancedMarkerElement: marker.map = mapRef.current / null
+			// google.maps.Marker: marker.setMap(mapRef.current) / marker.setMap(null)
+			if (typeof marker.setMap === "function") {
+				marker.setMap(ids.has(id) ? mapRef.current : null);
+			} else {
+				marker.map = ids.has(id) ? mapRef.current : null;
+			}
 			if (marker.content && marker.content.style) {
 				const isHot = id === activeId || id === hoveredId;
 				marker.content.style.width = isHot ? "20px" : "14px";
@@ -357,26 +384,25 @@ export default function MapExplore({ properties }) {
 
 	return (
 		<div className='fixed inset-0'>
-			<div className='absolute inset-0'>
-				<div ref={mapContainerRef} className='h-full w-full' />
-			</div>
+			{showMap ? (
+				<div className='absolute inset-0'>
+					<div ref={mapContainerRef} className='h-full w-full' />
+				</div>
+			) : (
+				<div className='absolute inset-0 bg-gradient-to-b from-[#0B1220] via-[#0D1628] to-[#0B1220]' />
+			)}
 
 			{/* Assombrissement léger pour intégrer la map au design */}
-			<div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-black/35 via-black/10 to-black/35' />
-			<div className='absolute inset-0 pointer-events-none bg-[#0B1220]/10 mix-blend-multiply' />
+			{showMap ? (
+				<>
+					<div className='absolute inset-0 pointer-events-none bg-gradient-to-b from-black/15 via-black/0 to-black/15' />
+				</>
+			) : null}
 
-			{loadingMap ? (
+			{loadingMap && showMap ? (
 				<div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
 					<div className='glass rounded-2xl px-5 py-3 text-sm text-white/80'>
 						Chargement de la carte…
-					</div>
-				</div>
-			) : null}
-
-			{!loadingMap && (mapError || !mapsEnabled) ? (
-				<div className='absolute inset-0 flex items-center justify-center px-6 pointer-events-none'>
-					<div className='glass rounded-2xl px-5 py-4 text-sm text-white/80 max-w-md text-center'>
-						{mapError || "Carte indisponible (Google Maps non configuré)."}
 					</div>
 				</div>
 			) : null}
@@ -397,6 +423,17 @@ export default function MapExplore({ properties }) {
 
 					{/* Header */}
 					<div className='px-4 pt-3 pb-3 border-b border-white/10'>
+						{!showMap ? (
+							<div className='mb-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80'>
+								<div className='font-semibold text-white/90'>
+									Carte indisponible
+								</div>
+								<div className='mt-1 text-white/70'>
+									{mapError ||
+										"Google Maps n’est pas configuré sur cet environnement."}
+								</div>
+							</div>
+						) : null}
 						<div className='flex items-center justify-between gap-3'>
 							<div className='flex items-center gap-2'>
 								<button

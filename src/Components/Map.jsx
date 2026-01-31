@@ -14,7 +14,12 @@ export default function Map({ markers, className = "" }) {
 
 				const { Map } = await loader.importLibrary("maps");
 				const { Geocoder } = await loader.importLibrary("geocoding");
-				const { AdvancedMarkerElement } = await loader.importLibrary("marker");
+				const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAP_ID;
+				const useAdvancedMarkers = Boolean(mapId);
+				const markerLib = useAdvancedMarkers
+					? await loader.importLibrary("marker")
+					: null;
+				const AdvancedMarkerElement = markerLib?.AdvancedMarkerElement;
 
 				const geocoder = new Geocoder();
 
@@ -63,19 +68,33 @@ export default function Map({ markers, className = "" }) {
 					center: positions[0],
 					zoom: DEFAULT_ZOOM,
 					minZoom: 10,
-					...(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID
-						? { mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID }
-						: {}),
+					...(mapId ? { mapId } : {}),
 				});
 
 				const bounds = new google.maps.LatLngBounds();
 				for (const position of positions) {
 					bounds.extend(position);
-					new AdvancedMarkerElement({
-						map,
-						position,
-						content: createPin(),
-					});
+					if (useAdvancedMarkers && AdvancedMarkerElement) {
+						new AdvancedMarkerElement({
+							map,
+							position,
+							content: createPin(),
+						});
+					} else {
+						new google.maps.Marker({
+							map,
+							position,
+							icon: {
+								path: google.maps.SymbolPath.CIRCLE,
+								fillColor: "#d7b76a",
+								fillOpacity: 1,
+								scale: 7,
+								strokeColor: "#ffffff",
+								strokeOpacity: 0.9,
+								strokeWeight: 1,
+							},
+						});
+					}
 				}
 
 				if (positions.length > 1) {
