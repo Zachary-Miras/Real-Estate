@@ -61,7 +61,9 @@ export default function Map({ markers, className = "" }) {
 				center: positions[0],
 				zoom: DEFAULT_ZOOM,
 				minZoom: 10,
-				mapId: "MY_NEXTJS_MAP_ID",
+				...(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID
+					? { mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID }
+					: {}),
 			});
 
 			const bounds = new google.maps.LatLngBounds();

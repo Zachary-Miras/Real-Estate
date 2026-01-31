@@ -173,7 +173,9 @@ export default function MapExplore({ properties }) {
 					center: { lat: 48.8566, lng: 2.3522 },
 					zoom: 12,
 					minZoom: 4,
-					mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || "MY_NEXTJS_MAP_ID",
+					...(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID
+						? { mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID }
+						: {}),
 					styles: MAP_STYLE_PREMIUM_MUTED,
 					disableDefaultUI: true,
 					zoomControl: true,
