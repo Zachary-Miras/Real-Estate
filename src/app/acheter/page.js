@@ -39,7 +39,7 @@ export default async function AcheterPage({ searchParams }) {
 				<div className='max-w-6xl mx-auto'>
 					{/* Filtres discrets (capsules) */}
 					<BuyFilters
-						initialCity={city || "Paris"}
+						initialCity={city || ""}
 						initialType={type || "ALL"}
 						initialMaxBudget={Number.isFinite(maxBudget) ? maxBudget : 1500000}
 					/>

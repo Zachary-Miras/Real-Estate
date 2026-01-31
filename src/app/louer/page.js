@@ -43,7 +43,7 @@ export default async function LouerPage({ searchParams }) {
 			<main className='px-6 md:px-12 pt-8 pb-20'>
 				<div className='max-w-6xl mx-auto'>
 					<BuyFilters
-						initialCity={city || "Paris"}
+						initialCity={city || ""}
 						initialType={type || "ALL"}
 						initialMaxBudget={Number.isFinite(maxBudget) ? maxBudget : 2500}
 					/>

@@ -105,6 +105,22 @@
 		-ms-overflow-style: none; /* Internet Explorer 10+ */
 		scrollbar-width: none; /* Firefox */
 	}
+
+	/* Google Maps: force le clipping dans les coins arrondis */
+	.map-clip {
+		position: relative;
+		overflow: hidden;
+		border-radius: inherit;
+	}
+	.map-clip .gm-style,
+	.map-clip .gm-style > div,
+	.map-clip .gm-style iframe,
+	.map-clip .gm-style canvas {
+		border-radius: inherit;
+	}
+	.map-clip .gm-style {
+		overflow: hidden;
+	}
 	.h-screen-minus-header {
 		height: calc(100vh - 120px);
 	}

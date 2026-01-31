@@ -126,18 +126,18 @@ export default async function Home() {
 			{/* 2) Section centrale */}
 			<section className='px-4 sm:px-6 md:px-12 mt-12 sm:mt-14 md:mt-20'>
 				<div className='max-w-6xl mx-auto grid grid-cols-12 gap-10 items-stretch'>
-					<div className='col-span-12 lg:col-span-6 min-w-0 flex flex-col gap-6 max-w-[640px] lg:max-w-none mx-auto w-full'>
+					<div className='col-span-11 lg:col-span-6 min-w-0 flex flex-col gap-6 max-w-[640px] lg:max-w-none mx-auto w-full'>
 						{featured.slice(0, 2).map((p) => (
 							<PropertyCard key={p.id} property={p} variant='stack' />
 						))}
 					</div>
 
-					<div className='col-span-12 lg:col-span-6 min-w-0 w-full max-w-[640px] lg:max-w-none mx-auto'>
+					<div className='col-span-11 lg:col-span-6 min-w-0 w-full max-w-[640px] lg:max-w-none mx-auto'>
 						<div className='glass rounded-[28px] p-4 h-full w-full overflow-hidden'>
 							<div className='text-sm font-semibold tracking-wide mb-3'>
 								Carte
 							</div>
-							<div className='h-[340px] sm:h-[520px] w-full max-w-full min-w-0 rounded-[24px] overflow-hidden relative'>
+							<div className='h-[340px] sm:h-[480px] w-full max-w-full min-w-0 rounded-[24px] overflow-hidden relative'>
 								<MapWrapper
 									markers={markers}
 									className='h-full w-full max-w-full min-w-0'

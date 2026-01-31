@@ -4,10 +4,10 @@ import Map from "./Map";
 function MapWrapper({ markers, className = "" }) {
 	return (
 		<div
-			className={`h-full w-full max-w-full min-w-0 overflow-hidden rounded-[24px] ${className}`.trim()}>
+			className={`map-clip h-full w-full max-w-full min-w-0 overflow-hidden rounded-[24px] ${className}`.trim()}>
 			<Map
 				markers={markers}
-				className='h-full w-full max-w-full min-w-0 overflow-hidden relative rounded-[24px]'
+				className='map-clip h-full w-full max-w-full min-w-0 overflow-hidden relative rounded-[24px]'
 			/>
 		</div>
 	);
