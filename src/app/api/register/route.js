@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 
 function parseEmailList(value) {
 	return String(value || "")
-		.split(",")
+		.split(/[\s,;]+/)
 		.map((s) => s.trim().toLowerCase())
 		.filter(Boolean);
 }

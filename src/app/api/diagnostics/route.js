@@ -15,7 +15,7 @@ function mask(value) {
 
 function parseEmailList(value) {
 	return String(value || "")
-		.split(",")
+		.split(/[\s,;]+/)
 		.map((s) => s.trim().toLowerCase())
 		.filter(Boolean);
 }
@@ -69,6 +69,18 @@ export async function GET(req) {
 			allowlist: {
 				adminCount: parseEmailList(process.env.ADMIN_EMAILS).length,
 				staffCount: parseEmailList(process.env.STAFF_EMAILS).length,
+				adminRawHasSemicolon: String(process.env.ADMIN_EMAILS || "").includes(
+					";",
+				),
+				staffRawHasSemicolon: String(process.env.STAFF_EMAILS || "").includes(
+					";",
+				),
+				adminRawHasNewline: /\r|\n/.test(
+					String(process.env.ADMIN_EMAILS || ""),
+				),
+				staffRawHasNewline: /\r|\n/.test(
+					String(process.env.STAFF_EMAILS || ""),
+				),
 			},
 			varsPresent: {
 				DATABASE_URL: present("DATABASE_URL"),
