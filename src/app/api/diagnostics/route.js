@@ -11,11 +11,23 @@ function mask(value) {
 	return `${s.slice(0, 4)}***${s.slice(-4)}`;
 }
 
-export async function GET() {
+export async function GET(req) {
+	const headers = req?.headers;
+	const host = headers?.get("host") || null;
+	const xfHost = headers?.get("x-forwarded-host") || null;
+	const xfProto = headers?.get("x-forwarded-proto") || null;
+	const origin = host && xfProto ? `${xfProto}://${host}` : null;
+
 	const data = {
 		ok: true,
 		at: new Date().toISOString(),
 		node: process.version,
+		request: {
+			host,
+			xForwardedHost: xfHost,
+			xForwardedProto: xfProto,
+			origin,
+		},
 		vercel: {
 			env: process.env.VERCEL_ENV || null,
 			url: process.env.VERCEL_URL || null,
@@ -26,6 +38,7 @@ export async function GET() {
 		},
 		app: {
 			nextauthUrl: process.env.NEXTAUTH_URL || null,
+			nextauthUrlMasked: mask(process.env.NEXTAUTH_URL),
 			varsPresent: {
 				DATABASE_URL: present("DATABASE_URL"),
 				NEXTAUTH_URL: present("NEXTAUTH_URL"),
