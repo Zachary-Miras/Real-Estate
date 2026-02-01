@@ -11,6 +11,13 @@ function mask(value) {
 	return `${s.slice(0, 4)}***${s.slice(-4)}`;
 }
 
+function parseEmailList(value) {
+	return String(value || "")
+		.split(",")
+		.map((s) => s.trim().toLowerCase())
+		.filter(Boolean);
+}
+
 export async function GET(req) {
 	const headers = req?.headers;
 	const host = headers?.get("host") || null;
@@ -39,6 +46,10 @@ export async function GET(req) {
 		app: {
 			nextauthUrl: process.env.NEXTAUTH_URL || null,
 			nextauthUrlMasked: mask(process.env.NEXTAUTH_URL),
+			allowlist: {
+				adminCount: parseEmailList(process.env.ADMIN_EMAILS).length,
+				staffCount: parseEmailList(process.env.STAFF_EMAILS).length,
+			},
 			varsPresent: {
 				DATABASE_URL: present("DATABASE_URL"),
 				NEXTAUTH_URL: present("NEXTAUTH_URL"),

@@ -2,6 +2,20 @@ import prisma from "@/services/prismaClient";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+function maskEmail(value) {
+	const email = String(value || "")
+		.trim()
+		.toLowerCase();
+	const at = email.indexOf("@");
+	if (at <= 1) return "***";
+	const name = email.slice(0, at);
+	const domain = email.slice(at + 1);
+	const safeName = `${name.slice(0, 2)}***`;
+	const dot = domain.lastIndexOf(".");
+	const safeDomain = dot > 1 ? `***${domain.slice(dot)}` : "***";
+	return `${safeName}@${safeDomain}`;
+}
+
 function parseEmailList(value) {
 	return String(value || "")
 		.split(",")
@@ -40,7 +54,12 @@ export const authOptions = {
 					.toLowerCase();
 				const password = String(credentials?.password || "");
 
-				if (!email || !password) return null;
+				if (!email || !password) {
+					console.warn("[AUTH_FAIL] missing_credentials", {
+						email: maskEmail(email),
+					});
+					return null;
+				}
 
 				const user = await prisma.user.findUnique({
 					where: { email },
@@ -53,13 +72,28 @@ export const authOptions = {
 					},
 				});
 
-				if (!user) return null;
+				if (!user) {
+					console.warn("[AUTH_FAIL] user_not_found", {
+						email: maskEmail(email),
+					});
+					return null;
+				}
 				// Allowlist (équipe) : si configurée, on la respecte. Sinon, on laisse
 				// les comptes existants se connecter (évite un lock-out en prod).
-				if (!isEmailAllowed(email)) return null;
+				if (!isEmailAllowed(email)) {
+					console.warn("[AUTH_FAIL] not_allowlisted", {
+						email: maskEmail(email),
+					});
+					return null;
+				}
 
 				const ok = await bcrypt.compare(password, user.passwordHash);
-				if (!ok) return null;
+				if (!ok) {
+					console.warn("[AUTH_FAIL] bad_password", {
+						email: maskEmail(email),
+					});
+					return null;
+				}
 
 				// En mode backoffice, le rôle vient de l'allowlist.
 				const expectedRole = getRoleForEmail(email);
