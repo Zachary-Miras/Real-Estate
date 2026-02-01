@@ -15,8 +15,10 @@ function isEmailAllowed(email) {
 	if (staff.length > 0) {
 		return staff.includes(email) || admin.has(email);
 	}
-	// Si STAFF_EMAILS n'est pas défini, on autorise uniquement les admins.
-	return admin.has(email);
+	// Si STAFF_EMAILS n'est pas défini, on ne bloque pas les comptes déjà créés.
+	// La sécurité repose alors sur l'existence d'un compte en DB + mot de passe.
+	// (La création de compte reste protégée via /api/register.)
+	return true;
 }
 
 function getRoleForEmail(email) {
@@ -39,7 +41,6 @@ export const authOptions = {
 				const password = String(credentials?.password || "");
 
 				if (!email || !password) return null;
-				if (!isEmailAllowed(email)) return null;
 
 				const user = await prisma.user.findUnique({
 					where: { email },
@@ -53,6 +54,9 @@ export const authOptions = {
 				});
 
 				if (!user) return null;
+				// Allowlist (équipe) : si configurée, on la respecte. Sinon, on laisse
+				// les comptes existants se connecter (évite un lock-out en prod).
+				if (!isEmailAllowed(email)) return null;
 
 				const ok = await bcrypt.compare(password, user.passwordHash);
 				if (!ok) return null;
