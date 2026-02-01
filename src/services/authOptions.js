@@ -61,16 +61,37 @@ export const authOptions = {
 					return null;
 				}
 
-				const user = await prisma.user.findUnique({
+				const selectUser = {
+					id: true,
+					email: true,
+					name: true,
+					passwordHash: true,
+					role: true,
+				};
+
+				let user = await prisma.user.findUnique({
 					where: { email },
-					select: {
-						id: true,
-						email: true,
-						name: true,
-						passwordHash: true,
-						role: true,
-					},
+					select: selectUser,
 				});
+
+				// MongoDB + emails non normalisés : la comparaison est case-sensitive.
+				// Fallback safe pour backoffice: scan (faible volumétrie) pour matcher
+				// en case-insensitive et éviter un lock-out en prod.
+				if (!user) {
+					const candidates = await prisma.user.findMany({ select: selectUser });
+					user = candidates.find(
+						(u) =>
+							String(u?.email || "")
+								.trim()
+								.toLowerCase() === email,
+					);
+					if (user) {
+						console.warn("[AUTH_WARN] ci_email_match", {
+							input: maskEmail(email),
+							stored: maskEmail(user.email),
+						});
+					}
+				}
 
 				if (!user) {
 					console.warn("[AUTH_FAIL] user_not_found", {

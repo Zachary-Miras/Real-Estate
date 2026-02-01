@@ -20,12 +20,31 @@ function parseEmailList(value) {
 		.filter(Boolean);
 }
 
+function maskEmail(value) {
+	const email = String(value || "")
+		.trim()
+		.toLowerCase();
+	const at = email.indexOf("@");
+	if (at <= 1) return "***";
+	const name = email.slice(0, at);
+	const domain = email.slice(at + 1);
+	const safeName = `${name.slice(0, 2)}***`;
+	const dot = domain.lastIndexOf(".");
+	const safeDomain = dot > 1 ? `***${domain.slice(dot)}` : "***";
+	return `${safeName}@${safeDomain}`;
+}
+
 export async function GET(req) {
 	let db = { ok: false };
 	try {
-		const [userCount, adminCount] = await Promise.all([
+		const [userCount, adminCount, usersSample] = await Promise.all([
 			prisma.user.count(),
 			prisma.user.count({ where: { role: "ADMIN" } }),
+			prisma.user.findMany({
+				select: { email: true, role: true },
+				take: 5,
+				orderBy: { createdAt: "desc" },
+			}),
 		]);
 		db = {
 			ok: true,
@@ -33,6 +52,10 @@ export async function GET(req) {
 			hasAdminUser: adminCount > 0,
 			userCount,
 			adminCount,
+			usersSampleMasked: (usersSample || []).map((u) => ({
+				email: maskEmail(u.email),
+				role: u.role,
+			})),
 		};
 	} catch (e) {
 		db = { ok: false, error: "db_counts_failed" };
@@ -69,6 +92,12 @@ export async function GET(req) {
 			allowlist: {
 				adminCount: parseEmailList(process.env.ADMIN_EMAILS).length,
 				staffCount: parseEmailList(process.env.STAFF_EMAILS).length,
+				adminMasked: parseEmailList(process.env.ADMIN_EMAILS)
+					.slice(0, 5)
+					.map(maskEmail),
+				staffMasked: parseEmailList(process.env.STAFF_EMAILS)
+					.slice(0, 5)
+					.map(maskEmail),
 				adminRawHasSemicolon: String(process.env.ADMIN_EMAILS || "").includes(
 					";",
 				),
