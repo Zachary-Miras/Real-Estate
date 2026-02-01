@@ -1,66 +1,10 @@
 export const runtime = "nodejs";
 
-import prisma from "@/services/prismaClient";
-
 function present(name) {
 	return Boolean(process.env[name] && String(process.env[name]).trim().length);
 }
 
-function mask(value) {
-	if (!value) return null;
-	const s = String(value);
-	if (s.length <= 8) return "***";
-	return `${s.slice(0, 4)}***${s.slice(-4)}`;
-}
-
-function parseEmailList(value) {
-	return String(value || "")
-		.split(/[\s,;]+/)
-		.map((s) => s.trim().toLowerCase())
-		.filter(Boolean);
-}
-
-function maskEmail(value) {
-	const email = String(value || "")
-		.trim()
-		.toLowerCase();
-	const at = email.indexOf("@");
-	if (at <= 1) return "***";
-	const name = email.slice(0, at);
-	const domain = email.slice(at + 1);
-	const safeName = `${name.slice(0, 2)}***`;
-	const dot = domain.lastIndexOf(".");
-	const safeDomain = dot > 1 ? `***${domain.slice(dot)}` : "***";
-	return `${safeName}@${safeDomain}`;
-}
-
 export async function GET(req) {
-	let db = { ok: false };
-	try {
-		const [userCount, adminCount, usersSample] = await Promise.all([
-			prisma.user.count(),
-			prisma.user.count({ where: { role: "ADMIN" } }),
-			prisma.user.findMany({
-				select: { email: true, role: true },
-				take: 5,
-				orderBy: { createdAt: "desc" },
-			}),
-		]);
-		db = {
-			ok: true,
-			hasAnyUser: userCount > 0,
-			hasAdminUser: adminCount > 0,
-			userCount,
-			adminCount,
-			usersSampleMasked: (usersSample || []).map((u) => ({
-				email: maskEmail(u.email),
-				role: u.role,
-			})),
-		};
-	} catch (e) {
-		db = { ok: false, error: "db_counts_failed" };
-	}
-
 	const headers = req?.headers;
 	const host = headers?.get("host") || null;
 	const xfHost = headers?.get("x-forwarded-host") || null;
@@ -71,7 +15,6 @@ export async function GET(req) {
 		ok: true,
 		at: new Date().toISOString(),
 		node: process.version,
-		db,
 		request: {
 			host,
 			xForwardedHost: xfHost,
@@ -87,30 +30,6 @@ export async function GET(req) {
 			branch: process.env.VERCEL_GIT_COMMIT_REF || null,
 		},
 		app: {
-			nextauthUrl: process.env.NEXTAUTH_URL || null,
-			nextauthUrlMasked: mask(process.env.NEXTAUTH_URL),
-			allowlist: {
-				adminCount: parseEmailList(process.env.ADMIN_EMAILS).length,
-				staffCount: parseEmailList(process.env.STAFF_EMAILS).length,
-				adminMasked: parseEmailList(process.env.ADMIN_EMAILS)
-					.slice(0, 5)
-					.map(maskEmail),
-				staffMasked: parseEmailList(process.env.STAFF_EMAILS)
-					.slice(0, 5)
-					.map(maskEmail),
-				adminRawHasSemicolon: String(process.env.ADMIN_EMAILS || "").includes(
-					";",
-				),
-				staffRawHasSemicolon: String(process.env.STAFF_EMAILS || "").includes(
-					";",
-				),
-				adminRawHasNewline: /\r|\n/.test(
-					String(process.env.ADMIN_EMAILS || ""),
-				),
-				staffRawHasNewline: /\r|\n/.test(
-					String(process.env.STAFF_EMAILS || ""),
-				),
-			},
 			varsPresent: {
 				DATABASE_URL: present("DATABASE_URL"),
 				NEXTAUTH_URL: present("NEXTAUTH_URL"),
@@ -127,10 +46,6 @@ export async function GET(req) {
 				),
 				NEXT_PUBLIC_EMAILJS_USER_ID: present("NEXT_PUBLIC_EMAILJS_USER_ID"),
 			},
-			// Info non sensible: on masque juste pour éviter d'afficher des URLs longues.
-			databaseUrlMasked: mask(process.env.DATABASE_URL),
-			mapsKeyMasked: mask(process.env.NEXT_PUBLIC_MAPS_API_KEY),
-			googleMapIdMasked: mask(process.env.NEXT_PUBLIC_GOOGLE_MAP_ID),
 		},
 	};
 
