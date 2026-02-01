@@ -49,10 +49,10 @@ export async function POST(req) {
 
 		// Politique backoffice :
 		// - Après bootstrap, seule une session ADMIN peut créer des comptes.
-		// - Bootstrap : si aucun user n'existe, on autorise uniquement la création d'un compte ADMIN (email présent dans ADMIN_EMAILS).
-		const userCount = await prisma.user.count();
+		// - Bootstrap : si aucun ADMIN n'existe, on autorise uniquement la création d'un compte ADMIN (email présent dans ADMIN_EMAILS).
+		const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
 		if (!isAdminSession) {
-			if (userCount === 0) {
+			if (adminCount === 0) {
 				if (!isEmailAdmin(email)) {
 					return Response.json(
 						{

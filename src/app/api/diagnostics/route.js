@@ -1,5 +1,7 @@
 export const runtime = "nodejs";
 
+import prisma from "@/services/prismaClient";
+
 function present(name) {
 	return Boolean(process.env[name] && String(process.env[name]).trim().length);
 }
@@ -19,6 +21,23 @@ function parseEmailList(value) {
 }
 
 export async function GET(req) {
+	let db = { ok: false };
+	try {
+		const [userCount, adminCount] = await Promise.all([
+			prisma.user.count(),
+			prisma.user.count({ where: { role: "ADMIN" } }),
+		]);
+		db = {
+			ok: true,
+			hasAnyUser: userCount > 0,
+			hasAdminUser: adminCount > 0,
+			userCount,
+			adminCount,
+		};
+	} catch (e) {
+		db = { ok: false, error: "db_counts_failed" };
+	}
+
 	const headers = req?.headers;
 	const host = headers?.get("host") || null;
 	const xfHost = headers?.get("x-forwarded-host") || null;
@@ -29,6 +48,7 @@ export async function GET(req) {
 		ok: true,
 		at: new Date().toISOString(),
 		node: process.version,
+		db,
 		request: {
 			host,
 			xForwardedHost: xfHost,

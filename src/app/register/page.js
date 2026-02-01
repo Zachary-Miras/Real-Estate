@@ -15,9 +15,9 @@ export default async function RegisterPage() {
 	const isAdmin = session?.user?.role === "ADMIN";
 
 	if (!isAdmin) {
-		const userCount = await prisma.user.count();
-		// Bootstrap: aucun compte -> autorise la création du premier admin.
-		if (userCount !== 0) {
+		const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
+		// Bootstrap: aucun admin -> autorise la création du premier admin.
+		if (adminCount !== 0) {
 			redirect("/login");
 		}
 	}
