@@ -1,10 +1,17 @@
-import { Montserrat } from "next/font/google";
+import { Cinzel, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
 	weight: ["400", "700"],
 	display: "swap",
+});
+
+const cinzel = Cinzel({
+	subsets: ["latin"],
+	weight: ["400", "600", "700"],
+	display: "swap",
+	variable: "--font-brand",
 });
 
 export const metadata = {
@@ -16,7 +23,7 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang='fr'>
 			<body
-				className={`${montserrat.className} app-bg min-h-screen text-[color:var(--text-on-dark)]`}>
+				className={`${montserrat.className} ${cinzel.variable} app-bg min-h-screen text-[color:var(--text-on-dark)]`}>
 				{children}
 			</body>
 		</html>

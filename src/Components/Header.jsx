@@ -2,6 +2,7 @@ import { authOptions } from "@/services/authOptions";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import HeaderClient from "./HeaderClient";
+import Logo from "./Logo";
 
 export async function Header({ className = "" } = {}) {
 	let session = null;
@@ -23,10 +24,12 @@ export async function Header({ className = "" } = {}) {
 						href='/'
 						className='flex items-center gap-3 min-w-0 sm:min-w-[200px] hover:opacity-95 transition-opacity'
 						aria-label="Retour à l'accueil">
-						<div className='h-10 w-10 rounded-2xl bg-white/10 border border-white/15' />
+						<div className='h-10 w-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center'>
+							<Logo size={36} />
+						</div>
 						<div className='leading-tight'>
 							<div className='hidden sm:block text-[11px] tracking-[0.28em] uppercase text-white/60'>
-								Logo
+								Agence
 							</div>
 							<div className='text-base sm:text-lg font-bold tracking-wide whitespace-nowrap'>
 								Real Estate

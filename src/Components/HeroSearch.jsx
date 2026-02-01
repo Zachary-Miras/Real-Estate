@@ -109,7 +109,8 @@ export default function HeroSearch() {
 						placeholder={mode === "rent" ? "Ex: 2500" : "Ex: 1000000"}
 					/>
 					<div className='text-[11px] text-black/50 mt-1'>
-						≈ {budgetLabel} €
+						{" "}
+						&nbsp; &nbsp; {budgetLabel} €
 					</div>
 				</div>
 

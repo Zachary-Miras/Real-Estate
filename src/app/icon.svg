@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 100 100" role="img" aria-label="Real Estate">
+  <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A24D" stroke-width="4" />
+
+  <g fill="none" stroke="#F5F5F5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+    <path d="M22 66H78" />
+    <path d="M26 66V54H34V66" />
+    <path d="M38 66V42H48V66" />
+    <path d="M43 42V34" />
+    <path d="M52 66V50H60V66" />
+    <path d="M64 66V38H74V66" />
+    <path d="M64 46H74" />
+  </g>
+
+  <path d="M43 34h0" stroke="#C9A24D" stroke-width="6" stroke-linecap="round" />
+</svg>
