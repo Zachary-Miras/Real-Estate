@@ -26,7 +26,7 @@ export default function ContactPage() {
 								</div>
 								<div className='mt-6 space-y-2 text-sm text-white/75'>
 									<div>📍 Marseille</div>
-									<div>✉️ contact@realestate.test</div>
+									<div>✉️ test@test.com</div>
 									<div>📞 +33 4 00 00 00 00</div>
 								</div>
 							</div>

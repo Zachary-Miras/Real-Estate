@@ -1,177 +1,175 @@
-# Real Estate — Plateforme immobilière (Next.js + Prisma)
+# Real Estate — Plateforme immobilière
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![Prisma](https://img.shields.io/badge/Prisma-5-2D3748)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas%20ou%20local-47A248)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38B2AC)
-![License](https://img.shields.io/badge/License-Non%20sp%C3%A9cifi%C3%A9e-lightgrey)
+Plateforme immobilière moderne construite avec Next.js 14, Prisma et MongoDB. Elle combine un catalogue public complet et un backoffice pour la gestion des biens et des leads.
 
-Site immobilier avec pages publiques (achat/location, carte, fiches biens) + un backoffice pour gérer les biens et les leads.
+![Next.js](https://img.shields.io/badge/Next.js-14.2-black)
+![Prisma](https://img.shields.io/badge/Prisma-5.19-2D3748)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC)
+![Node.js](https://img.shields.io/badge/Node.js-20.x-339933)
 
 ## Sommaire
 
-- [Real Estate — Plateforme immobilière (Next.js + Prisma)](#real-estate--plateforme-immobilière-nextjs--prisma)
+- [Real Estate — Plateforme immobilière](#real-estate--plateforme-immobilière)
   - [Sommaire](#sommaire)
   - [Fonctionnalités](#fonctionnalités)
-  - [Stack](#stack)
-  - [Démarrage rapide](#démarrage-rapide)
-  - [Variables d’environnement](#variables-denvironnement)
-  - [Base de données (Prisma + MongoDB)](#base-de-données-prisma--mongodb)
-    - [Workflow “statut” des biens](#workflow-statut-des-biens)
-  - [Backoffice \& Auth](#backoffice--auth)
+  - [Stack technique](#stack-technique)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Base de données](#base-de-données)
+  - [Backoffice et authentification](#backoffice-et-authentification)
+  - [API routes](#api-routes)
   - [Scripts](#scripts)
+  - [Structure du projet](#structure-du-projet)
   - [Déploiement](#déploiement)
 
 ## Fonctionnalités
 
-- Catalogue de biens + pages publiques (détail, recherche, carte)
-- Backoffice: CRUD biens, gestion de statut (brouillon/publication/vendu/loué/archivé)
-- Leads: collecte via formulaires + gestion de statut côté backoffice
-- Intégrations: Google Maps (loader centralisé), EmailJS (contact)
+Interface publique:
 
-## Stack
+- Catalogue de biens avec recherche et filtres
+- Fiches détaillées des biens
+- Carte interactive avec Google Maps
+- Pages spécialisées (achat, location, estimation)
+- Formulaires de contact avec EmailJS
 
-- Next.js 14 (App Router)
-- Prisma + MongoDB
-- NextAuth (Credentials) pour l’authentification backoffice
-- TailwindCSS
-- Google Maps JavaScript API
+Backoffice:
 
-## Démarrage rapide
+- CRUD complet des biens
+- Gestion de statut (brouillon, publication, vendu, loué, archivé)
+- Gestion des leads et suivi de statut
+- Authentification via NextAuth
 
-Prérequis:
+## Stack technique
 
-- Node.js 18+ (recommandé: 20)
-- Une base MongoDB (local ou Atlas)
+| Technologie | Version     | Usage                        |
+| ----------- | ----------- | ---------------------------- |
+| Next.js     | 14.2        | Framework React (App Router) |
+| Prisma      | 5.19        | ORM pour MongoDB             |
+| MongoDB     | Atlas/Local | Base de données              |
+| NextAuth    | 4.24        | Authentification backoffice  |
+| TailwindCSS | 3.4         | Styling                      |
+| Google Maps | API v3      | Cartes interactives          |
+| EmailJS     | 4.4         | Envoi d'emails               |
+
+## Installation
+
+Prerequis:
+
+- Node.js 20.x
+- MongoDB (local ou Atlas)
 
 ```bash
 npm install
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-1. Configure la variable `DATABASE_URL` dans `.env`
+## Configuration
 
-2. Synchronise le schéma Prisma avec MongoDB:
+Configurer les variables d'environnement dans `.env.local`:
+
+```env
+DATABASE_URL="mongodb+srv://user:password@cluster.mongodb.net/dbname"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="votre-secret-long-et-aleatoire"
+ADMIN_EMAILS="admin@example.com"
+STAFF_EMAILS="staff@example.com"
+NEXT_PUBLIC_MAPS_API_KEY="votre-cle-google-maps"
+NEXT_PUBLIC_GOOGLE_MAP_ID="votre-map-id"
+NEXT_PUBLIC_EMAILJS_SERVICE_ID="votre-service-id"
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID="votre-template-id"
+NEXT_PUBLIC_EMAILJS_USER_ID="votre-user-id"
+```
+
+| Variable                        | Obligatoire | Description                   |
+| ------------------------------- | ----------: | ----------------------------- |
+| DATABASE_URL                    |         Oui | Connexion MongoDB pour Prisma |
+| NEXTAUTH_URL                    |         Oui | URL de l'app                  |
+| NEXTAUTH_SECRET                 |         Oui | Secret NextAuth               |
+| ADMIN_EMAILS                    |         Oui | Liste d'emails admin          |
+| STAFF_EMAILS                    |         Non | Liste d'emails staff          |
+| NEXT_PUBLIC_MAPS_API_KEY        | Selon usage | Google Maps API               |
+| NEXT_PUBLIC_GOOGLE_MAP_ID       |         Non | Google Map ID                 |
+| NEXT_PUBLIC_EMAILJS_SERVICE_ID  | Selon usage | EmailJS Service               |
+| NEXT_PUBLIC_EMAILJS_TEMPLATE_ID | Selon usage | EmailJS Template              |
+| NEXT_PUBLIC_EMAILJS_USER_ID     | Selon usage | EmailJS Public Key            |
+
+## Base de données
 
 ```bash
 npx prisma db push
-```
-
-3. (Optionnel) Seed de données:
-
-```bash
-npm run db:seed
-```
-
-4. Lance l’app:
-
-```bash
-npm run dev
-```
-
-App: http://localhost:3000
-
-## Variables d’environnement
-
-Les variables sont listées dans `.env.example`.
-
-| Variable                          | Obligatoire | Description                                 |
-| --------------------------------- | ----------: | ------------------------------------------- |
-| `DATABASE_URL`                    |         Oui | Connexion MongoDB utilisée par Prisma       |
-| `NEXT_PUBLIC_MAPS_API_KEY`        | Selon usage | Clé Google Maps (affichage carte)           |
-| `NEXT_PUBLIC_GOOGLE_MAP_ID`       | Non         | Map ID Google (style/affichage carte)       |
-| `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | Selon usage | EmailJS — Template                          |
-| `NEXT_PUBLIC_EMAILJS_SERVICE_ID`  | Selon usage | EmailJS — Service                           |
-| `NEXT_PUBLIC_EMAILJS_USER_ID`     | Selon usage | EmailJS — Public Key / User ID              |
-| `NEXTAUTH_URL`                    |         Oui | URL de l’app (ex: `http://localhost:3000`)  |
-| `NEXTAUTH_SECRET`                 |         Oui | Secret NextAuth (long et aléatoire)         |
-| `ADMIN_EMAILS`                    |         Oui | Liste d’emails admin (séparés par virgules) |
-| `STAFF_EMAILS`                    |         Non | Liste d’emails staff (séparés par virgules) |
-
-## Base de données (Prisma + MongoDB)
-
-Ce projet utilise Prisma avec le provider MongoDB.
-
-- Appliquer le schéma à la base:
-
-```bash
-npx prisma db push
-```
-
-- Générer le client Prisma (si nécessaire):
-
-```bash
 npx prisma generate
 ```
 
-- Ouvrir Prisma Studio (optionnel):
+Workflow des statuts:
 
-```bash
-npx prisma studio
-```
+- DRAFT, PUBLISHED, SOLD, RENTED, ARCHIVED
+- Seuls les biens PUBLISHED sont visibles publiquement
 
-### Workflow “statut” des biens
-
-Le modèle `Property` a un champ `status`:
-
-- `DRAFT`, `PUBLISHED`, `SOLD`, `RENTED`, `ARCHIVED`
-
-Règles:
-
-- Le site public n’affiche que les biens `PUBLISHED`
-- Le backoffice permet de changer le statut
-
-Si tu avais déjà des biens en base avant l’ajout du champ, lance:
+Backfill pour les anciennes donnees:
 
 ```bash
 npm run db:backfill:status
 ```
 
-## Backoffice & Auth
+## Backoffice et authentification
 
-L’auth backoffice est basée sur NextAuth (Credentials).
-
-Accès:
-
-- Si `STAFF_EMAILS` est défini: seuls `STAFF_EMAILS` + `ADMIN_EMAILS` peuvent se connecter
-- Sinon: seuls `ADMIN_EMAILS`
-
-Bootstrap (premier compte):
-
-- Tant qu’il n’y a aucun user en base, `/register` permet uniquement de créer le premier compte ADMIN (email présent dans `ADMIN_EMAILS`)
-- Ensuite, seule une session ADMIN peut créer des comptes (via `/register`)
-
-Entrées utiles:
-
-- Backoffice: `/backoffice`
+- Acces: `/backoffice`
 - Connexion: `/login`
-- Inscription (contrôlée): `/register`
+- Inscription controlee: `/register`
+
+Regles:
+
+- Si `STAFF_EMAILS` est defini: seuls STAFF + ADMIN peuvent se connecter
+- Sinon: seuls ADMIN
+
+## API routes
+
+| Endpoint                        | Methode        | Description               |
+| ------------------------------- | -------------- | ------------------------- |
+| /api/auth/[...nextauth]         | POST           | Authentification NextAuth |
+| /api/register                   | POST           | Inscription utilisateur   |
+| /api/diagnostics                | GET            | Diagnostic app            |
+| /api/health                     | GET            | Health check              |
+| /api/leads                      | GET/POST       | Leads publics             |
+| /api/backoffice/leads           | GET/PUT        | Leads backoffice          |
+| /api/backoffice/properties      | GET/POST       | Biens backoffice          |
+| /api/backoffice/properties/[id] | GET/PUT/DELETE | Biens par id              |
 
 ## Scripts
 
-| Commande                     | Description                               |
-| ---------------------------- | ----------------------------------------- |
-| `npm run dev`                | Lance le serveur de dev                   |
-| `npm run build`              | Build de production                       |
-| `npm run start`              | Démarre le build                          |
-| `npm run lint`               | Lint Next.js                              |
-| `npm run db:seed`            | Seed Prisma                               |
-| `npm run db:seed:reset`      | Seed avec reset (utilise `RESET_DB=true`) |
-| `npm run db:backfill:status` | Backfill du champ `status`                |
+| Commande                   | Description              |
+| -------------------------- | ------------------------ |
+| npm run dev                | Lance le serveur de dev  |
+| npm run build              | Build de production      |
+| npm run start              | Demarre le build         |
+| npm run lint               | Lint Next.js             |
+| npm run db:seed            | Seed Prisma              |
+| npm run db:seed:reset      | Seed avec reset          |
+| npm run db:backfill:status | Backfill du champ status |
+
+## Structure du projet
+
+```
+shop/
+├── prisma/
+│   ├── schema.prisma
+│   ├── seed.js
+│   └── backfillPropertyStatus.js
+├── src/
+│   ├── app/
+│   ├── Components/
+│   └── services/
+├── next.config.mjs
+├── tailwind.config.js
+├── postcss.config.mjs
+├── jsconfig.json
+└── package.json
+```
 
 ## Déploiement
 
-Recommandé: Vercel + MongoDB Atlas.
-
-- Configure les variables d’environnement (au minimum `DATABASE_URL`, `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `ADMIN_EMAILS`)
-- Si tu utilises une Map ID Google, configure aussi `NEXT_PUBLIC_GOOGLE_MAP_ID`
-- Assure-toi que l’URL de prod est cohérente avec `NEXTAUTH_URL`
-- Après déploiement, applique le schéma si nécessaire: `npx prisma db push`
-
----
-
-Si tu veux, je peux aussi:
-
-- ajouter des badges “scripts”, “last commit”, etc.
-- préparer une section “Architecture” plus détaillée (routes API, services, composants)
-- ajouter un ou deux screenshots (si tu me dis où les mettre, ex: `public/`)
+```bash
+npm run build
+npm run start
+```
