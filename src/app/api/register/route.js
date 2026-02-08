@@ -16,8 +16,7 @@ function isEmailAllowed(email) {
 	if (staff.length > 0) {
 		return staff.includes(email) || admin.has(email);
 	}
-	// Si STAFF_EMAILS n'est pas défini, on ne bloque pas la création (déjà
-	// restreinte aux admins via la logique ci-dessous). Ça évite un lock-out.
+	// Si STAFF_EMAILS n'est pas défini, on ne bloque pas la création
 	return true;
 }
 
