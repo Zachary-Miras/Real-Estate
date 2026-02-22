@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import CloudinaryUploader from "./CloudinaryUploader";
 
 const PROPERTY_TYPES = [
 	{ value: "HOUSE", label: "Maison" },
@@ -18,8 +19,14 @@ const PROPERTY_STATUSES = [
 	{ value: "ARCHIVED", label: "Archivé" },
 ];
 
-function joinPhotos(photos) {
-	return Array.isArray(photos) ? photos.join("\n") : "";
+function toPhotosArray(photos) {
+	if (Array.isArray(photos)) return photos.filter(Boolean);
+	if (typeof photos === "string")
+		return photos
+			.split(/\n|,/)
+			.map((s) => s.trim())
+			.filter(Boolean);
+	return [];
 }
 
 export default function BackofficePropertyForm({ mode, initialProperty }) {
@@ -45,7 +52,7 @@ export default function BackofficePropertyForm({ mode, initialProperty }) {
 			state: a.state || "",
 			zipCode: a.zipCode || "",
 			country: a.country || "France",
-			photos: joinPhotos(p.photos),
+			photos: toPhotosArray(p.photos),
 			surfaceM2: p.surfaceM2 ?? "",
 			rooms: p.rooms ?? "",
 			bedrooms: p.bedrooms ?? "",
@@ -359,17 +366,10 @@ export default function BackofficePropertyForm({ mode, initialProperty }) {
 					</label>
 				</div>
 
-				<div>
-					<div className='text-xs uppercase tracking-widest text-white/60 mb-2'>
-						Photos (1 URL par ligne ou séparées par virgule)
-					</div>
-					<textarea
-						className='w-full min-h-[120px] rounded-xl border border-white/15 bg-white/10 px-4 py-3 outline-none text-white placeholder:text-white/40'
-						value={form.photos}
-						onChange={(e) => setField("photos", e.target.value)}
-						placeholder='https://...\nhttps://...'
-					/>
-				</div>
+				<CloudinaryUploader
+					photos={form.photos}
+					onChange={(urls) => setField("photos", urls)}
+				/>
 
 				{error ? (
 					<div className='text-sm text-red-200 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3'>
