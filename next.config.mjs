@@ -12,6 +12,7 @@ const nextConfig = {
 			{ protocol: "https", hostname: "bstatic.com" },
 			{ protocol: "https", hostname: "www.vacationkey.com" },
 			{ protocol: "https", hostname: "vacationkey.com" },
+			{ protocol: "https", hostname: "res.cloudinary.com" },
 		],
 	},
 };
